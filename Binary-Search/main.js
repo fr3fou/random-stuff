@@ -18,3 +18,5 @@ function binarySearch(arr, num) {
     }
     return undefined;
 }
+
+console.log(binarySearch([2, 5, 7, 11, 12, 15, 20, 30, 34, 36], 34));

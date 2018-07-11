@@ -1,60 +1,77 @@
 using System;
 using System.Collections.Generic;
 
-namespace Linked_List {
-    class Node<T> where T : IComparable {
+namespace Linked_List
+{
+    class Node<T> where T : IComparable
+    {
         public T Data;
         public Node<T> Next;
         Comparer<T> comparer = Comparer<T>.Default;
-        public Node (T data) {
+        public Node(T data)
+        {
             this.Data = data;
             Next = null;
         }
 
-        public void Add (T data) {
-            if (Next == null) {
-                Next = new Node<T> (data);
-            } else {
-                Next.Add (data);
+        public void Add(T data)
+        {
+            if (Next == null)
+            {
+                Next = new Node<T>(data);
+            }
+            else
+            {
+                Next.Add(data);
             }
         }
 
-         public void AddSorted (T data) {
+        public void AddSorted(T data)
+        {
 
-            if (Next == null) {
-                Next = new Node<T> (data);
-            } else if(comparer.Compare(data, Next.Data) < 0 ) {
+            if (Next == null)
+            {
+                Next = new Node<T>(data);
+            }
+            else if (comparer.Compare(data, Next.Data) < 0)
+            {
                 Node<T> tempNode = new Node<T>(data);
                 tempNode.Next = Next;
                 Next = tempNode;
             }
-            else{
+            else
+            {
                 Next.AddSorted(data);
             }
         }
 
-        public void Visualize () {
-            System.Console.WriteLine ("[{0}]", this.Data);
-            if (Next != null) {
-                Next.Visualize ();
+        public void Visualize()
+        {
+            Console.WriteLine("[{0}]", this.Data);
+            if (Next != null)
+            {
+                Next.Visualize();
             }
         }
     }
 
-    class LinkedList<T> where T : IComparable {
+    class LinkedList<T> where T : IComparable
+    {
         public Node<T> headNode;
         Comparer<T> comparer = Comparer<T>.Default;
-        public LinkedList() {
+        public LinkedList()
+        {
             headNode = null;
         }
 
-        public LinkedList(T data) {
-            headNode = new Node<T> (data);
+        public LinkedList(T data)
+        {
+            headNode = new Node<T>(data);
         }
 
         public void AddToEnd(T data)
         {
-            if(headNode==null)
+            if (headNode == null)
             {
                 headNode = new Node<T>(data);
             }
@@ -64,9 +81,9 @@ namespace Linked_List {
             }
         }
 
-         public void AddToBeginning(T data)
+        public void AddToBeginning(T data)
         {
-            if(headNode==null)
+            if (headNode == null)
             {
                 headNode = new Node<T>(data);
             }
@@ -80,8 +97,8 @@ namespace Linked_List {
 
         public void AddSorted(T data)
         {
-            if(headNode==null) headNode= new Node<T>(data);
-            else if(comparer.Compare(data, headNode.Data)<0)
+            if (headNode == null) headNode = new Node<T>(data);
+            else if (comparer.Compare(data, headNode.Data) < 0)
             {
                 AddToBeginning(data);
             }
@@ -93,11 +110,11 @@ namespace Linked_List {
 
         public bool Contains(T data)
         {
-            if(comparer.Compare(data,headNode.Data) == 0)
+            if (comparer.Compare(data, headNode.Data) == 0)
             {
                 return true;
             }
-            else if (comparer.Compare(data,headNode.Data) != 0)
+            else if (comparer.Compare(data, headNode.Data) != 0)
             {
                 headNode = headNode.Next;
                 Contains(data);
@@ -109,9 +126,9 @@ namespace Linked_List {
             return true;
         }
 
-         public void Visualize()
+        public void Visualize()
         {
-            if(headNode!=null)
+            if (headNode != null)
             {
                 headNode.Visualize();
             }

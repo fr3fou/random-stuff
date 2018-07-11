@@ -12,7 +12,7 @@ namespace Linked_List
             linkedList.AddSorted(19);
             linkedList.AddSorted(9);
             linkedList.AddSorted(1);
-            if(linkedList.Contains(90)) System.Console.WriteLine("Found!");
+            if( linkedList.Contains(90)) Console.WriteLine("Found!");
         }
     }
 }

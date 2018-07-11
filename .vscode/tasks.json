@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Linked-List/Linked-List.csproj"
+                "${workspaceFolder}/Binary-Tree/Binary-Tree-Exercise.csproj"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -17,7 +17,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Linked-List/Linked-List.csproj"
+                "${workspaceFolder}/Binary-Tree/Binary-Tree-Exercise.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

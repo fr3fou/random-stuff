@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Linked-List/bin/Debug/netcoreapp2.0/Linked-List.dll",
+            "program": "${workspaceFolder}/Binary-Tree/bin/Debug/netcoreapp2.0/Binary-Tree-Exercise.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Linked-List",
+            "cwd": "${workspaceFolder}/Binary-Tree",
             // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
             "console": "internalConsole",
             "stopAtEntry": false,
@@ -30,9 +30,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Linked-List/bin/Debug/netcoreapp2.0/Linked-List.dll",
+            "program": "${workspaceFolder}/Binary-Tree/bin/Debug/netcoreapp2.0/Binary-Tree-Exercise.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Linked-List",
+            "cwd": "${workspaceFolder}/Binary-Tree",
             "console": "internalConsole",
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart"

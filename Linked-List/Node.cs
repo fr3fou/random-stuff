@@ -7,7 +7,7 @@ namespace Linked_List
     {
         public T Data;
         public Node<T> Next;
-        Comparer<T> comparer = Comparer<T>.Default;
+        private Comparer<T> comparer = Comparer<T>.Default;
         public Node(T data)
         {
             this.Data = data;
@@ -58,7 +58,7 @@ namespace Linked_List
     class LinkedList<T> where T : IComparable
     {
         public Node<T> headNode;
-        Comparer<T> comparer = Comparer<T>.Default;
+        private Comparer<T> comparer = Comparer<T>.Default;
         public LinkedList()
         {
             headNode = null;

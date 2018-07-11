@@ -90,6 +90,25 @@ namespace Linked_List {
                 headNode.AddSorted(data);
             }
         }
+
+        public bool Contains(T data)
+        {
+            if(comparer.Compare(data,headNode.Data) == 0)
+            {
+                return true;
+            }
+            else if (comparer.Compare(data,headNode.Data) != 0)
+            {
+                headNode = headNode.Next;
+                Contains(data);
+            }
+            else
+            {
+                return false;
+            }
+            return true;
+        }
+
          public void Visualize()
         {
             if(headNode!=null)

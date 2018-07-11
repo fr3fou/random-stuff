@@ -1,0 +1,11 @@
+D:\Projects\Programming Desktop Apps\Random-Exercises\Linked-List\bin\Debug\netcoreapp2.1\Linked-List.deps.json
+D:\Projects\Programming Desktop Apps\Random-Exercises\Linked-List\bin\Debug\netcoreapp2.1\Linked-List.runtimeconfig.json
+D:\Projects\Programming Desktop Apps\Random-Exercises\Linked-List\bin\Debug\netcoreapp2.1\Linked-List.runtimeconfig.dev.json
+D:\Projects\Programming Desktop Apps\Random-Exercises\Linked-List\bin\Debug\netcoreapp2.1\Linked-List.dll
+D:\Projects\Programming Desktop Apps\Random-Exercises\Linked-List\bin\Debug\netcoreapp2.1\Linked-List.pdb
+D:\Projects\Programming Desktop Apps\Random-Exercises\Linked-List\obj\Debug\netcoreapp2.1\Linked-List.csprojAssemblyReference.cache
+D:\Projects\Programming Desktop Apps\Random-Exercises\Linked-List\obj\Debug\netcoreapp2.1\Linked-List.csproj.CoreCompileInputs.cache
+D:\Projects\Programming Desktop Apps\Random-Exercises\Linked-List\obj\Debug\netcoreapp2.1\Linked-List.AssemblyInfoInputs.cache
+D:\Projects\Programming Desktop Apps\Random-Exercises\Linked-List\obj\Debug\netcoreapp2.1\Linked-List.AssemblyInfo.cs
+D:\Projects\Programming Desktop Apps\Random-Exercises\Linked-List\obj\Debug\netcoreapp2.1\Linked-List.dll
+D:\Projects\Programming Desktop Apps\Random-Exercises\Linked-List\obj\Debug\netcoreapp2.1\Linked-List.pdb

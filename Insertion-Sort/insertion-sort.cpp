@@ -3,17 +3,17 @@
 #include <array>
 using namespace std;
 
-template <size_t arrSize>
-void insertion_sort(array<int, arrSize> &arr)
+template<typename T, std::size_t arr_size>
+void insertion_sort(array<T, arr_size> &arr)
 {
-    int size = arr.size();
+    size_t size = arr.size();
 
-    for (int i = 1; i < size; i++)
+    for (size_t i = 1; i < size; i++)
     {
-        int num = arr[i];
-        for (int j = i - 1; j >= 0; j--)
+        T num = arr[i];
+        for (size_t j = i - 1; j >= 0; j--)
         {
-            int prev_num = arr[j];
+            T prev_num = arr[j];
             if (num > prev_num)
             {
                 break;

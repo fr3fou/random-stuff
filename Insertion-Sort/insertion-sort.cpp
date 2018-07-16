@@ -3,8 +3,8 @@
 #include <array>
 using namespace std;
 
-template <size_t n>
-void insertion_sort(array<int, n> &arr)
+template <size_t size>
+void insertion_sort(array<int, size> &arr)
 {
     int size = arr.size();
 
@@ -30,7 +30,7 @@ void insertion_sort(array<int, n> &arr)
 
 int main()
 {
-    // 1 2 3 4 5 6 8 11 12 15 <-- goal    |
+    // 1 2 3 4 5 6 8 11 12 15 <-- goal    
     // 4 5 12 6 3 8 11 15 1 2 <-- original
     array<int, 10> arr = {4, 5, 12, 6, 3, 8, 11, 15, 1, 2};
     insertion_sort(arr);

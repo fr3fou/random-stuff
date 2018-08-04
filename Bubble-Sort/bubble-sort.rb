@@ -12,7 +12,7 @@ def bubblesort(arr)
         end
     end
 end
-#      4 5 6 3 8 11 12 1 2 15
+#      1 2 3 4 5 6 8 11 12 15
 arr = [4, 5, 12, 6, 3, 8, 11, 15, 1, 2]
 
 bubblesort(arr)

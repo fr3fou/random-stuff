@@ -11,18 +11,17 @@ void insertion_sort(array<T, arr_size> &arr)
     for (size_t i = 1; i < size; i++)
     {
         T num = arr[i];
-        for (size_t j = i - 1; j >= 0; j--)
+        T prev_num = arr[i-1];
+        
+        size_t j = i - 1;
+        while (j >= 0 && num < prev_num)
         {
-            T prev_num = arr[j];
-            if (num > prev_num)
-            {
-                break;
-            }
             if (num < prev_num)
             {
                 arr[j + 1] = prev_num;
                 arr[j] = num;
             }
+            j--;
         }
     }
 }

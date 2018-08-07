@@ -1,4 +1,4 @@
-# Flood-Fill 
+# Flood-Fill
 
 Simple python program to fill a black & white image using the flood fill algorithm.
 
@@ -23,7 +23,7 @@ pip install Pillow
 2. Run main.py using a terminal of your choice. Provide the image name + coordinates of where to start the flood fill.
 
 ```sh
-python main.py simple50.png 15 30
+py main.py simple50.png 15 30
 ```
 
 This will start a flood fill on `simple50.png` at X: `15`, Y: `30`. The output file will be in the same dir under the name `simple50_filled.png`

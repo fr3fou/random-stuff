@@ -4,53 +4,60 @@ import sys
 
 # get args
 file_path = sys.argv[1]
-x = int(sys.argv[2])
-y = int(sys.argv[3])
+
+# arrays go by rows first THEN columns
+row = int(sys.argv[3]) 
+col = int(sys.argv[2]) 
 
 # get img
 print('Loading image...')
-img = Image.open(file_path).convert('L')
+img = Image.open(file_path).convert('1')
 
 # get dimensions
 width = img.size[0]
 height = img.size[1]
 
-# we need 2 arrays - original and new
+# turn into array
 arr = np.array(img)
 
-# convert 2d array values from (0 - 255) to (1s or 0s) 
-for i in range(len(arr)):
-    for j in range(len(arr[i])):
-        if arr[i][j] == 255 and arr[i][j] == 255 and arr[i][j] == 255:
-            arr[i][j] = 0
-            arr[i][j] = 0
-            arr[i][j] = 0
-        else:
-            arr[i][j] = 1
-            arr[i][j] = 1
-            arr[i][j] = 1
+# invert values (True values become False and vice versa)
+arr = np.logical_not(arr)
 
 # validate
-if x > width or x < 0 or y > height or y < 0:
+if row > height or row < 0 or col > width or col < 0:
     sys.exit('Invalid coordinates!')
 
 print(f'{file_path} successfully loaded!')
 
 
-# def flood_fill(arr, x, y):
+def flood_fill(arr, row, col):
+    # if the coords are out of bounds
+    if row >= height or col >= width or row < 0  or col < 0:
+        return
+    
+    # if there is no pixel on these coords (False value)
+    if arr[row][col] == False:
+        # fill it in (invert)
+        arr[row][col] = True
+    else:
+        return
 
+    # if there is no pixel on the coords surrounding this pixel, call recursively   
+    if arr[row-1][col] == False:
+         flood_fill(arr, row-1, col)
+    if arr[row][col+1] == False:
+        flood_fill(arr, row, col+1)
+    if arr[row+1][row] == False:
+        flood_fill(arr, row+1, row)
+    if arr[row][col-1] == False:
+        flood_fill(arr, row, col-1)
 
-# convert 2d array values from (1s or 0s) to (0 - 255)
-for i in range(len(arr)):
-    for j in range(len(arr[i])):
-        if arr[i][j] == 1 and arr[i][j] == 1 and arr[i][j] == 1:
-            arr[i][j] = 0
-            arr[i][j] = 0
-            arr[i][j] = 0
-        else:
-            arr[i][j] = 255
-            arr[i][j] = 255
-            arr[i][j] = 255
+# call the method
+flood_fill(arr, row, col)
 
-result = Image.fromarray(arr)
+# invert values (True values become False and vice versa)
+arr = np.logical_not(arr)
+
+# converts to RGB image and saves
+result = Image.fromarray(arr.reshape(width, height).astype('uint8')*255)
 result.save('result.png')

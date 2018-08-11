@@ -39,5 +39,6 @@
         "array": "cpp",
         "algorithm": "cpp",
         "iterator": "cpp"
-    }
+    },
+    "python.pythonPath": "D:\\Program Files (x86)\\Python\\python.exe"
 }

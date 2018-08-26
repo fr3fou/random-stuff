@@ -1,4 +1,5 @@
-function binarySearch(arr, num) {
+Array.prototype.binarySearch = function (num) {
+    let arr = this;
     let startIndex = 0; // first element
     let endIndex = arr.length - 1; // last element
 
@@ -18,5 +19,5 @@ function binarySearch(arr, num) {
     }
     return undefined;
 }
-
-console.log(binarySearch([2, 5, 7, 11, 12, 15, 20, 30, 34, 36], 34));
+let arr = [2, 5, 7, 11, 12, 15, 20, 30, 34, 36];
+console.log(arr.binarySearch(34));

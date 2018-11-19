@@ -4,24 +4,25 @@
 using namespace std;
 
 template<typename T, std::size_t arr_size>
-void insertion_sort(array<T, arr_size> &arr)
-{
+void print_arr(array<T, arr_size> &arr) {
+    size_t size = arr.size();
+    
+    for(size_t i = 0; i < size; i++) {
+        cout << arr[i] << endl;
+    }
+}
+
+template<typename T, std::size_t arr_size>
+void insertion_sort(array<T, arr_size> &arr) {
     size_t size = arr.size();
 
-    for (size_t i = 1; i < size; i++)
-    {
+    for (size_t i = 1; i < size; i++) {
         T num = arr[i];
-        T prev_num = arr[i-1];
         size_t j = i - 1;
          
-        while (j >= 0 && num < prev_num)
-        {
-             prev_num = arr[j];
-            if (num < prev_num)
-            {
-                arr[j + 1] = prev_num;
-                arr[j] = num;
-            }
+        while (j >= 0 && num < arr[j]) {
+            arr[j + 1] = arr[j];
+            arr[j] = num;
             j--;
         }
     }
@@ -33,10 +34,6 @@ int main()
     // 4 5 12 6 3 8 11 15 1 2 <-- original
     array<int, 10> arr = {4, 5, 12, 6, 3, 8, 11, 15, 1, 2};
     insertion_sort(arr);
-    int size = arr.size();
-    for (size_t i = 0; i < size; i++)
-    {
-        cout << arr[i] << endl;
-    }
+    print_arr(arr);
     return 0;
 }

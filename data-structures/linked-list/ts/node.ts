@@ -1,4 +1,4 @@
-class Node<T> {
+class Node<T extends number> {
   next: Node<T> = null;
   value: T;
 

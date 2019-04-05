@@ -1,6 +1,6 @@
 import Node from "./node";
 
-class LinkedList<T> {
+class LinkedList<T extends number> {
   private head: Node<T> = null;
 
   constructor(val?: T) {

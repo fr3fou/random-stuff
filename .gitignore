@@ -3,7 +3,6 @@
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-/Steam-ID/config.json
-/Steam-ID/node_modules/*
 bin
+dist/
 obj

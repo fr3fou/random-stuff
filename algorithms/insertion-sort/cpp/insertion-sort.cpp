@@ -28,8 +28,7 @@ void insertion_sort(array<T, arr_size> &arr) {
     }
 }
 
-int main()
-{
+int main() {
     // 1 2 3 4 5 6 8 11 12 15 <-- goal
     // 4 5 12 6 3 8 11 15 1 2 <-- original
     array<int, 10> arr = {4, 5, 12, 6, 3, 8, 11, 15, 1, 2};

@@ -8,12 +8,12 @@ Simple python program to fill a black & white image using the flood fill algorit
 
     Download from [here!](https://www.python.org/)
 
-2. Pillow
+2. Python requirements
 
-    Install using your py package manager.
+    Install using your python package manager.
 
 ```sh
-pip install Pillow
+pip install -r requirements.txt
 ```
 
 ## Usage

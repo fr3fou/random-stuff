@@ -24,6 +24,14 @@ class LinkedList<T extends number> {
       return false;
     }
   }
+
+  traverse() {
+    if (this.head !== null) {
+      return this.head.traverse();
+    } else {
+      throw new Error("Values must be added to LinkedList before traversing");
+    }
+  }
 }
 
 export default LinkedList;

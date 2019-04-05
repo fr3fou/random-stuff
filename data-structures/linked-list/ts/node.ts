@@ -23,6 +23,19 @@ class Node<T extends number> {
       return false;
     }
   }
+
+  traverse() {
+    const result: string[] = [];
+
+    if (this.next !== null) {
+      result.push(`${this.value} -> `);
+      result.push(this.next.traverse());
+    } else {
+      result.push(`${this.value}`);
+    }
+
+    return result.join("");
+  }
 }
 
 export default Node;

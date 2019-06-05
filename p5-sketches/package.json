@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "eslint-config-p5js": "^1.0.1"
+  }
+}

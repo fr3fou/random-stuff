@@ -114,7 +114,12 @@ function handleClick() {
 
   if (start && end) {
     euclideanDistance = floor(dist(start.x, start.y, end.x, end.y));
+    manhattanDistance = abs(start.x - end.x) + abs(start.y - end.y);
 
-    distP.html(`Euclidean Distance: ${euclideanDistance}`)
+    distP.html(`
+     Euclidean Distance: ${euclideanDistance}
+     </br>
+     Manhattan Distance: ${manhattanDistance}
+    `)
   }
 }

@@ -16,7 +16,7 @@ function setup() {
   console.log(squareSize);
   const c = createCanvas(
     canvasWidth + 3 * squareThickness,
-    canvasHeight + 3 * squareThickness,
+    canvasHeight + 3 * squareThickness
   );
 
   for (let i = 0; i < canvasWidth; i += squareSize) {
@@ -46,18 +46,18 @@ function draw() {
     // draw manhattan distance
 
     // start is to the left of end
-    let maxLines = manhattanDistance / squareSize; 
+    let maxLines = manhattanDistance / squareSize;
     if (start.x <= end.x) {
       // start is under end
-      if (start.y <= end.y) {
+      if (start.y >= end.y) {
         let prevEnd = createVector(start.x, start.y);
-        stroke(0,0,255);
+        stroke(0, 0, 255);
         for (let i = 0; i <= maxLines; i++) {
           if (i % 2 == 0) {
-            line(prevEnd.x, prevEnd.y, prevEnd.x + squareSize, prevEnd.y)
+            line(prevEnd.x, prevEnd.y, prevEnd.x + squareSize, prevEnd.y);
             prevEnd.x = prevEnd.x + squareSize;
           } else {
-            line(prevEnd.x, prevEnd.y, prevEnd.x, prevEnd.y + squareSize)
+            line(prevEnd.x, prevEnd.y, prevEnd.x, prevEnd.y + squareSize);
             prevEnd.y = prevEnd.y + squareSize;
           }
         }
@@ -65,7 +65,7 @@ function draw() {
       }
     } else {
       // start is under end
-      if (start.y <= end.y) {
+      if (start.y >= end.y) {
       } else {
       }
     }

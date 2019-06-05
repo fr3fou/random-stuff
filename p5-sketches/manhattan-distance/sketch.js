@@ -3,16 +3,19 @@ const squareSize = 100;
 const squareThickness = 25;
 const canvasHeight = canvasWidth;
 const squareAmount = canvasHeight / squareSize;
+const squares = [];
 
-let squares = [];
 let start;
 let end;
 let startOrEnd = false;
+let euclideanDistance;
+let manhattanDistance;
+let distP;
 
 function setup() {
   const c = createCanvas(
     canvasWidth + 3 * squareThickness,
-    canvasHeight + 3 * squareThickness
+    canvasHeight + 3 * squareThickness,
   );
 
   for (let i = 0; i < canvasWidth; i += squareSize) {
@@ -21,13 +24,23 @@ function setup() {
     }
   }
 
+  distP = createP();
+
   c.mousePressed(handleClick);
 }
 
 function draw() {
   background(255);
+
   for (const square of squares) {
     square.draw();
+  }
+
+  if (start && end) {
+    // draw euclidean distance
+    stroke(0, 255, 0);
+    strokeWeight(10);
+    line(start.x, start.y, end.x, end.y);
   }
 
   if (start) {
@@ -81,7 +94,6 @@ function handleClick() {
     }
 
     // bottom left corner
-    // bottom right corner
     currentX = square.pos.x;
     currentY = square.pos.y + squareSize;
     currentDistance = dist(mouseX, mouseY, currentX, currentY);
@@ -99,4 +111,10 @@ function handleClick() {
   }
 
   startOrEnd = !startOrEnd;
+
+  if (start && end) {
+    euclideanDistance = floor(dist(start.x, start.y, end.x, end.y));
+
+    distP.html(`Euclidean Distance: ${euclideanDistance}`)
+  }
 }

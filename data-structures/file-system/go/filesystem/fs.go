@@ -25,7 +25,6 @@ type file struct {
 // File contains all the methods
 type File interface {
 	walk(path string) (*file, error)
-	read()
 }
 
 // file implementations
@@ -98,23 +97,43 @@ func (f *Fs) ChangeDir(path string) error {
 }
 
 // CreateDir creates a new directory in the current directory
-func (f *Fs) CreateDir(name string) error {
-	if _, ok := f.currentDir.children[name]; ok {
+func (f *Fs) CreateDir(path string) error {
+	// get the path up until the last element
+	lastItem := strings.LastIndex(path, "/")
+
+	var (
+		name string
+		cf   *file
+		err  error
+	)
+
+	if lastItem > -1 {
+		cf, err = f.currentDir.walk(path[:lastItem])
+		name = path[lastItem+1:]
+	} else {
+		cf = f.currentDir
+		err = nil
+		name = path
+	}
+
+	if err != nil {
+		return err
+	}
+
+	if _, ok := cf.children[name]; ok {
 		return errors.New("fs: can't create a directory that already exists")
 	}
 
-	var path string
-
-	// no parent means we are at root
-	if f.currentDir.parent == nil {
-		path = f.currentDir.path + name
+	// no parent means path is at root
+	if cf.parent == nil {
+		path = cf.path + name
 	} else {
-		path = f.currentDir.path + "/" + name
+		path = cf.path + "/" + name
 	}
 
-	f.currentDir.children[name] = &file{
+	cf.children[name] = &file{
 		isDir:    true,
-		parent:   f.currentDir,
+		parent:   cf,
 		name:     name,
 		children: make(children),
 		path:     path,
@@ -124,23 +143,43 @@ func (f *Fs) CreateDir(name string) error {
 }
 
 // CreateFile creates a new file in the current directory
-func (f *Fs) CreateFile(name string, content []byte) error {
-	if _, ok := f.currentDir.children[name]; ok {
+func (f *Fs) CreateFile(path string, content []byte) error {
+	// get the path up until the last element
+	lastItem := strings.LastIndex(path, "/")
+
+	var (
+		name string
+		cf   *file
+		err  error
+	)
+
+	if lastItem > -1 {
+		name = path[lastItem+1:]
+		cf, err = f.currentDir.walk(path[:lastItem])
+	} else {
+		cf = f.currentDir
+		err = nil
+		name = path
+	}
+
+	if err != nil {
+		return err
+	}
+
+	if _, ok := cf.children[name]; ok {
 		return errors.New("fs: can't create a file that already exists")
 	}
 
-	var path string
-
-	// no parent means we are at root
-	if f.currentDir.parent == nil {
-		path = f.currentDir.path + name
+	// no parent means path is at root
+	if cf.parent == nil {
+		path = cf.path + name
 	} else {
-		path = f.currentDir.path + "/" + name
+		path = cf.path + "/" + name
 	}
 
-	f.currentDir.children[name] = &file{
+	cf.children[name] = &file{
 		isDir:   false,
-		parent:  f.currentDir,
+		parent:  cf,
 		name:    name,
 		content: content,
 		path:    path,
@@ -183,4 +222,12 @@ func New() Fs {
 // PrintWorkingDirectory returns the current directory's path
 func (f *Fs) PrintWorkingDirectory() string {
 	return f.currentDir.path
+}
+
+func parsePath(str string) []string {
+	s := strings.FieldsFunc(str, func(c rune) bool {
+		return c == '/'
+	})
+
+	return s
 }

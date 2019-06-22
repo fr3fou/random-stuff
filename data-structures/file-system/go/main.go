@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
 	root := &file{
@@ -16,7 +18,21 @@ func main() {
 		currentDir: root,
 	}
 
-	fs.createDir("etc")
+	fs.createDir("usr")
+	fs.changeDir("usr")
 
-	fmt.Printf("%v", fs.currentDir.children)
+	fmt.Println(fs.currentDir.path)
+
+	fs.createDir("share")
+	fs.changeDir("share")
+
+	fmt.Println(fs.currentDir.path)
+
+	fs.changeDir("../..")
+
+	fmt.Println(fs.currentDir.path)
+
+	fs.changeDir("usr/share")
+
+	fmt.Println(fs.currentDir.path)
 }

@@ -11,12 +11,13 @@ type Fs struct {
 	currentDir *file
 }
 
-type children map[string]*file
+// Children is the underlying map which for items
+type Children map[string]*file
 
 type file struct {
 	name     string
 	path     string
-	children children
+	children Children
 	isDir    bool
 	parent   *file
 	content  []byte
@@ -138,11 +139,46 @@ func (f *Fs) CreateDir(path string) error {
 		isDir:    true,
 		parent:   cf,
 		name:     strings.Trim(name, "/"),
-		children: make(children),
+		children: make(Children),
 		path:     path,
 	}
 
 	return nil
+}
+
+// ListDirectoryContents lists all of the items inside a directory
+func (f *Fs) ListDirectoryContents(path string) (Children, error) {
+	// get the path up until the last element
+	lastItem := strings.LastIndex(path, "/")
+
+	var (
+		name string
+		cf   *file
+		err  error
+	)
+
+	// if we are trying to ls a nested directory, we should check if all the directories preceding it actually exist
+	if lastItem > -1 {
+		// walk up until the last item
+		cf, err = f.currentDir.walk(path[:lastItem])
+		// the name is going to be our last item
+		name = path[lastItem+1:]
+	} else {
+		// if it's not nested, we can assume it's in the current directory
+		cf = f.currentDir
+		err = nil
+		name = path
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	if _, ok := cf.children[name]; !ok {
+		return nil, errors.New("fs: can't list items inside a directory that doesn't exist")
+	}
+
+	return cf.children, nil
 }
 
 // CreateFile creates a new file in the current directory
@@ -253,7 +289,7 @@ func New() Fs {
 		name:     "/",
 		path:     "/",
 		isDir:    true,
-		children: make(children),
+		children: make(Children),
 		parent:   nil,
 	}
 

@@ -72,4 +72,13 @@ func main() {
 	fs.DeleteFile("/usr/share/testing")
 	// shouldn't work as the file has been deleted
 	content, _ = fs.ReadFile("/usr/share/testing")
+
+	fs.ChangeDir("..")
+	fmt.Println("fs: changed dir to: " + fs.PrintWorkingDirectory())
+
+	items, _ := fs.ListDirectoryContents(fs.PrintWorkingDirectory())
+
+	for k, v := range items {
+		fmt.Printf("%v - %+v\n", k, v)
+	}
 }

@@ -107,8 +107,11 @@ func (f *Fs) CreateDir(path string) error {
 		err  error
 	)
 
+	// if we are trying to make a nested directory, we should check if all the directorie preceding it actually exist
 	if lastItem > -1 {
+		// walk up until the last item
 		cf, err = f.currentDir.walk(path[:lastItem])
+		// the name is going to be our last item
 		name = path[lastItem+1:]
 	} else {
 		cf = f.currentDir
@@ -134,7 +137,7 @@ func (f *Fs) CreateDir(path string) error {
 	cf.children[name] = &file{
 		isDir:    true,
 		parent:   cf,
-		name:     name,
+		name:     strings.Trim(name, "/"),
 		children: make(children),
 		path:     path,
 	}
@@ -153,9 +156,12 @@ func (f *Fs) CreateFile(path string, content []byte) error {
 		err  error
 	)
 
+	// if we are trying to make a nested directory, we should check if all the directorie preceding it actually exist
 	if lastItem > -1 {
-		name = path[lastItem+1:]
+		// walk up until the last item
 		cf, err = f.currentDir.walk(path[:lastItem])
+		// the name is going to be our last item
+		name = path[lastItem+1:]
 	} else {
 		cf = f.currentDir
 		err = nil
@@ -180,7 +186,7 @@ func (f *Fs) CreateFile(path string, content []byte) error {
 	cf.children[name] = &file{
 		isDir:   false,
 		parent:  cf,
-		name:    name,
+		name:    strings.Trim(name, "/"),
 		content: content,
 		path:    path,
 	}

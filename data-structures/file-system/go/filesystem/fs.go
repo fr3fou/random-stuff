@@ -181,6 +181,43 @@ func (f *Fs) ListDirectoryContents(path string) (Children, error) {
 	return cf.children, nil
 }
 
+// DeleteDirectory deletes the directory at a given path
+func (f *Fs) DeleteDirectory(path string) error {
+	// get the path up until the last element
+	lastItem := strings.LastIndex(path, "/")
+
+	var (
+		name string
+		cf   *file
+		err  error
+	)
+
+	// if we are trying to make a nested directory, we should check if all the directorie preceding it actually exist
+	if lastItem > -1 {
+		// walk up until the last item
+		cf, err = f.currentDir.walk(path[:lastItem])
+		// the name is going to be our last item
+		name = path[lastItem+1:]
+	} else {
+		// if it's not nested, we can assume it's in the current directory
+		cf = f.currentDir
+		err = nil
+		name = path
+	}
+
+	if err != nil {
+		return err
+	}
+
+	if _, ok := cf.children[name]; !ok {
+		return errors.New("fs: can't delete a directory that doesn't exist")
+	}
+
+	delete(cf.children, name)
+
+	return nil
+}
+
 // CreateFile creates a new file in the current directory
 func (f *Fs) CreateFile(path string, content []byte) error {
 	// get the path up until the last element

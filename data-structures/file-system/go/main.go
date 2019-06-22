@@ -81,4 +81,9 @@ func main() {
 	for k, v := range items {
 		fmt.Printf("%v - %+v\n", k, v)
 	}
+
+	fs.DeleteDirectory("/usr/share/fog")
+	items, err := fs.ListDirectoryContents("/usr/share/fog")
+	fmt.Println(err)
+
 }

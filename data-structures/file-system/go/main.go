@@ -65,6 +65,11 @@ func main() {
 
 	fmt.Println("fs: changed dir to: " + fs.PrintWorkingDirectory())
 
+	// shouldn't work as the directories preceding it don't exist
 	fs.CreateDir("/usr/share/fog/this/shouldnt-work")
 	fs.ChangeDir("/usr/share/fog/this/shouldnt-work")
+
+	fs.DeleteFile("/usr/share/testing")
+	// shouldn't work as the file has been deleted
+	content, _ = fs.ReadFile("/usr/share/testing")
 }

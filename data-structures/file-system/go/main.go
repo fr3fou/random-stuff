@@ -44,4 +44,8 @@ func main() {
 
 	fmt.Println("fs: changed dir to: " + fs.currentDir.path)
 
+	fs.changeDir("/")
+
+	fmt.Println("fs: changed dir to: " + fs.currentDir.path)
+
 }

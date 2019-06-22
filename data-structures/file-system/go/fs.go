@@ -24,7 +24,8 @@ type file struct {
 type File interface {
 	changeDir(path string) (*file, error)
 	createFile(path string, content string) error
-	createDir(name string)
+	createDir(name string) error
+	create(file file) error
 	read(path string)
 }
 
@@ -38,6 +39,11 @@ func (f *file) changeDir(path string) (*file, error) {
 	// walk up the tree to the root
 	if strings.HasPrefix(path, "/") && f.parent != nil {
 		return f.parent.changeDir(path)
+	}
+
+	// if our target is the root and we have walked up to it, just return it
+	if path == "/" {
+		return f, nil
 	}
 
 	// get all the files in the path

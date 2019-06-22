@@ -86,4 +86,8 @@ func main() {
 	items, err := fs.ListDirectoryContents("/usr/share/fog")
 	fmt.Println(err)
 
+	fs.CreateFile("kernel2", []byte("hey!"))
+	fs.EditFile("kernel2", []byte("hey again!"))
+	content, _ = fs.ReadFile("kernel2")
+	fmt.Println(string(content))
 }

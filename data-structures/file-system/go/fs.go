@@ -35,9 +35,19 @@ func (f *file) changeDir(path string) (*file, error) {
 		return nil, errors.New("fs: can't change to a file")
 	}
 
-	// get all the files in the path
-	files := strings.Split(path, "/")
+	// walk up the tree to the root
+	if strings.HasPrefix(path, "/") && f.parent != nil {
+		cf, err := f.parent.changeDir(path)
 
+		if err != nil {
+			return nil, err
+		}
+
+		return cf, nil
+	}
+
+	// get all the files in the path
+	files := strings.Split(strings.Trim(path, "/"), "/")
 	file, rest := files[0], files[1:]
 
 	// up a dir

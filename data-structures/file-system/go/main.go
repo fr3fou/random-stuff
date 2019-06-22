@@ -32,7 +32,11 @@ func main() {
 
 	fmt.Println(fs.currentDir.path)
 
-	fs.changeDir("usr/share")
+	fs.changeDir("usr/share/")
+
+	fmt.Println(fs.currentDir.path)
+
+	fs.changeDir("/usr/share")
 
 	fmt.Println(fs.currentDir.path)
 }

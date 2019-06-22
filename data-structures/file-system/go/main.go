@@ -2,50 +2,40 @@ package main
 
 import (
 	"fmt"
+	"github.com/fr3fou/go-fs/filesystem"
 )
 
 func main() {
-	root := &file{
-		name:     "/",
-		path:     "/",
-		isDir:    true,
-		children: make(children),
-		parent:   nil,
-	}
+	fs := filesystem.New()
 
-	fs := fs{
-		root:       root,
-		currentDir: root,
-	}
+	fs.CreateDir("usr")
+	fs.ChangeDir("usr")
 
-	fs.createDir("usr")
-	fs.changeDir("usr")
+	fmt.Println("fs: changed dir to: " + fs.PrintWorkingDirectory())
 
-	fmt.Println("fs: changed dir to: " + fs.currentDir.path)
+	fs.CreateDir("share")
+	fs.ChangeDir("share")
 
-	fs.createDir("share")
-	fs.changeDir("share")
+	fmt.Println("fs: changed dir to: " + fs.PrintWorkingDirectory())
 
-	fmt.Println("fs: changed dir to: " + fs.currentDir.path)
+	fs.ChangeDir("../..")
 
-	fs.changeDir("../..")
+	fmt.Println("fs: changed dir to: " + fs.PrintWorkingDirectory())
 
-	fmt.Println("fs: changed dir to: " + fs.currentDir.path)
+	fs.ChangeDir("usr/share/")
 
-	fs.changeDir("usr/share/")
+	fmt.Println("fs: changed dir to: " + fs.PrintWorkingDirectory())
 
-	fmt.Println("fs: changed dir to: " + fs.currentDir.path)
+	fs.ChangeDir("/usr/share")
 
-	fs.changeDir("/usr/share")
+	fmt.Println("fs: changed dir to: " + fs.PrintWorkingDirectory())
 
-	fmt.Println("fs: changed dir to: " + fs.currentDir.path)
+	fs.ChangeDir("..")
 
-	fs.changeDir("..")
+	fmt.Println("fs: changed dir to: " + fs.PrintWorkingDirectory())
 
-	fmt.Println("fs: changed dir to: " + fs.currentDir.path)
+	fs.ChangeDir("/")
 
-	fs.changeDir("/")
-
-	fmt.Println("fs: changed dir to: " + fs.currentDir.path)
+	fmt.Println("fs: changed dir to: " + fs.PrintWorkingDirectory())
 
 }

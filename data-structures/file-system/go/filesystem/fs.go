@@ -1,11 +1,12 @@
-package main
+package filesystem
 
 import (
 	"errors"
 	"strings"
 )
 
-type fs struct {
+// Fs is the struct for the fileSystem
+type Fs struct {
 	root       *file
 	currentDir *file
 }
@@ -18,6 +19,7 @@ type file struct {
 	children children
 	isDir    bool
 	parent   *file
+	content  []byte
 }
 
 // File contains all the methods
@@ -109,18 +111,47 @@ func (f *file) createDir(name string) error {
 
 // fs implementations
 
-func (f *fs) changeDir(path string) (*file, error) {
+// ChangeDir changes to a directory
+func (f *Fs) ChangeDir(path string) error {
 	cf, err := f.currentDir.changeDir(path)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	f.currentDir = cf
 
-	return f.currentDir, nil
+	return nil
 }
 
-func (f *fs) createDir(name string) error {
-	return f.currentDir.createDir(name)
+// CreateDir creates a new directory in the current directory
+func (f *Fs) CreateDir(name string) error {
+	err := f.currentDir.createDir(name)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// New creates a new fileSystem
+func New() Fs {
+	root := &file{
+		name:     "/",
+		path:     "/",
+		isDir:    true,
+		children: make(children),
+		parent:   nil,
+	}
+
+	return Fs{
+		root:       root,
+		currentDir: root,
+	}
+}
+
+// PrintWorkingDirectory returns the current directory's path
+func (f *Fs) PrintWorkingDirectory() string {
+	return f.currentDir.path
 }

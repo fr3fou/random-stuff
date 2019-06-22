@@ -37,31 +37,19 @@ func (f *file) changeDir(path string) (*file, error) {
 
 	// walk up the tree to the root
 	if strings.HasPrefix(path, "/") && f.parent != nil {
-		cf, err := f.parent.changeDir(path)
-
-		if err != nil {
-			return nil, err
-		}
-
-		return cf, nil
+		return f.parent.changeDir(path)
 	}
 
 	// get all the files in the path
 	files := strings.Split(strings.Trim(path, "/"), "/")
 	file, rest := files[0], files[1:]
 
-	// up a dir
+	// going up a dir
 	if file == ".." {
 		// no parent means we are at root
 		if f.parent == nil {
 			// we can just ignore the ../
-			cf, err := f.changeDir(strings.Join(rest, "/"))
-
-			if err != nil {
-				return nil, err
-			}
-
-			return cf, nil
+			return f.changeDir(strings.Join(rest, "/"))
 		}
 
 		// if there are no files left, we just return the parent
@@ -70,14 +58,7 @@ func (f *file) changeDir(path string) (*file, error) {
 		}
 
 		// we have to keep going if there are files left
-		cf, err := f.parent.changeDir(strings.Join(rest, "/"))
-
-		if err != nil {
-			return nil, err
-		}
-
-		return cf, nil
-
+		return f.parent.changeDir(strings.Join(rest, "/"))
 	}
 
 	cf, ok := f.children[file]
@@ -91,13 +72,8 @@ func (f *file) changeDir(path string) (*file, error) {
 		return cf, nil
 	}
 
-	cf, err := cf.changeDir(strings.Join(rest, "/"))
-
-	if err != nil {
-		return nil, err
-	}
-
-	return cf, nil
+	// recursively keep changing
+	return cf.changeDir(strings.Join(rest, "/"))
 }
 
 func (f *file) createDir(name string) error {

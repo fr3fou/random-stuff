@@ -96,16 +96,16 @@ func (f *file) walkToParent(path string) (*file, string, error) {
 	if lastItem == 0 {
 		// for cases like /usr
 		// walk up until the last item
-		cf, err = f.walk(path)
+		cf, err = f.walk("/")
 		// the name is going to be our item but without the /
 		name = path[lastItem+1:]
 	} else if lastItem > -1 {
-		// for cases like /usr/share/local
-		// if we are trying to make a nested file, we should check if all the directories preceding it actually exist
-		// walk up until the last item
-		cf, err = f.walk(path[:lastItem])
-		// the name is going to be our last item
-		name = path[lastItem+1:]
+			// for cases like /usr/share/local
+			// if we are trying to make a nested file, we should check if all the directories preceding it actually exist
+			// walk up until the last item
+			cf, err = f.walk(path[:lastItem])
+			// the name is going to be our last item
+			name = path[lastItem+1:]
 	} else {
 		// for cases like usr
 		// if it's not nested, we can assume it's in the current directory

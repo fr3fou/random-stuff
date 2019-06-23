@@ -28,8 +28,8 @@ func main() {
 
 	fmt.Printf("[%s@%s %s] ~ ", user.Name, hostname, fs.PrintWorkingDirectory())
 	for scanner.Scan() {
-
 		txt := strings.Split(scanner.Text(), " ")
+
 		cmd := txt[0]
 		args := txt[1:]
 
@@ -48,25 +48,69 @@ func main() {
 			}
 			fmt.Println()
 		case "mkdir":
-			fs.CreateDir(strings.Join(args, " "))
-		case "cd":
-			fs.ChangeDir(strings.Join(args, " "))
-		case "touch":
-			fs.CreateFile(args[0], []byte(strings.Join(args[1:], " ")))
-		case "rm":
-			if args[0] == "-r" {
-				fs.DeleteDirectory(strings.Join(args[1:], " "))
+			if len(args) >= 1 {
+				err := fs.CreateDir(strings.Join(args, " "))
+
+				if err != nil {
+					fmt.Println(err)
+				}
 			} else {
-				fs.DeleteFile(strings.Join(args, " "))
+				fmt.Println("mkdir requires at least 1 arg")
 			}
+		case "cd":
+			if len(args) >= 1 {
+				err := fs.ChangeDir(strings.Join(args, " "))
+
+				if err != nil {
+					fmt.Println(err)
+				}
+			} else {
+				fmt.Println("cd requires at least 1 arg")
+			}
+		case "touch":
+			if len(args) >= 2 {
+				err := fs.CreateFile(args[0], []byte(strings.Join(args[1:], " ")))
+
+				if err != nil {
+					fmt.Println(err)
+				}
+			} else {
+				fmt.Println("touch needs at least 2 args")
+			}
+		case "rm":
+			ln := len(args)
+			if ln >= 1 {
+				if args[0] == "-r" {
+					if ln >= 2 {
+						err := fs.DeleteDirectory(strings.Join(args[1:], " "))
+						if err != nil {
+							fmt.Println(err)
+						}
+					} else {
+						fmt.Println("rm -r requires at least 2 args")
+					}
+				} else {
+					err := fs.DeleteFile(strings.Join(args, " "))
+					if err != nil {
+						fmt.Println(err)
+					}
+				}
+			} else {
+				fmt.Println("rm requires at least 1 arg")
+			}
+
 		case "cat":
-			content, err := fs.ReadFile(strings.Join(args, " "))
+			if len(args) > 1 {
+				content, err := fs.ReadFile(strings.Join(args, " "))
 
-			if err != nil {
-				fmt.Println(err)
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				fmt.Println(string(content))
+			} else {
+				fmt.Println("cat requires at least 1 arg")
 			}
-
-			fmt.Println(string(content))
 
 		case "exit":
 			return

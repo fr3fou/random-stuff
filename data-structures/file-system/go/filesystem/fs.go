@@ -78,8 +78,8 @@ func (f *file) walk(path string) (*file, error) {
 	return cf.walk(strings.Join(rest, "/"))
 }
 
-// walkToParent walks up to the given path and returns the parent of the last file.
-func (f *file) walkToParent(path string, fn func(cf *file, name string) (interface{}, error)) (interface{}, error) {
+// walkToParent walks up to the given path and returns the parent of the last file
+func (f *file) walkToParent(path string) (*file, string, error) {
 	// remove the trailing slash at the end
 	path = strings.TrimRight(path, "/")
 
@@ -115,10 +115,10 @@ func (f *file) walkToParent(path string, fn func(cf *file, name string) (interfa
 	}
 
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
-	return fn(cf, name)
+	return cf, name, nil
 }
 
 // fs implementations
@@ -142,30 +142,32 @@ func (f *Fs) ChangeDir(path string) error {
 
 // CreateDir creates a new directory in the current directory
 func (f *Fs) CreateDir(path string) error {
-	_, err := f.currentDir.walkToParent(path, func(cf *file, name string) (interface{}, error) {
-		if _, ok := cf.children[name]; ok {
-			return nil, errors.New("fs: can't create a directory that already exists")
-		}
+	cf, name, err := f.currentDir.walkToParent(path)
 
-		// no parent means path is at root
-		if cf.parent == nil {
-			path = cf.path + name
-		} else {
-			path = cf.path + "/" + name
-		}
+	if err != nil {
+		return err
+	}
 
-		cf.children[name] = &file{
-			isDir:    true,
-			parent:   cf,
-			name:     strings.Trim(name, "/"),
-			children: make(Children),
-			path:     path,
-		}
+	if _, ok := cf.children[name]; ok {
+		return errors.New("fs: can't create a directory that already exists")
+	}
 
-		return nil, nil
-	})
+	// no parent means path is at root
+	if cf.parent == nil {
+		path = cf.path + name
+	} else {
+		path = cf.path + "/" + name
+	}
 
-	return err
+	cf.children[name] = &file{
+		isDir:    true,
+		parent:   cf,
+		name:     strings.Trim(name, "/"),
+		children: make(Children),
+		path:     path,
+	}
+
+	return nil
 }
 
 // ListDirectoryContents lists all of the items inside a directory
@@ -189,63 +191,65 @@ func (f *Fs) ListDirectoryContents(path string) (Children, error) {
 
 // DeleteDirectory deletes the directory at a given path
 func (f *Fs) DeleteDirectory(path string) error {
-	_, err := f.currentDir.walkToParent(path, func(cf *file, name string) (interface{}, error) {
-		if _, ok := cf.children[name]; !ok {
-			return nil, errors.New("fs: can't delete a directory that doesn't exist")
-		}
+	cf, name, err := f.currentDir.walkToParent(path)
 
-		delete(cf.children, name)
+	if err != nil {
+		return err
+	}
 
-		return nil, nil
+	if _, ok := cf.children[name]; !ok {
+		return errors.New("fs: can't delete a directory that doesn't exist")
+	}
 
-	})
+	delete(cf.children, name)
 
-	return err
+	return nil
 }
 
 // CreateFile creates a new file in the current directory
 func (f *Fs) CreateFile(path string, content []byte) error {
-	_, err := f.currentDir.walkToParent(path, func(cf *file, name string) (interface{}, error) {
-		if _, ok := cf.children[name]; ok {
-			return nil, errors.New("fs: can't create a file that already exists")
-		}
+	cf, name, err := f.currentDir.walkToParent(path)
+	if err != nil {
+		return err
+	}
 
-		// no parent means path is at root
-		if cf.parent == nil {
-			path = cf.path + name
-		} else {
-			path = cf.path + "/" + name
-		}
+	if _, ok := cf.children[name]; ok {
+		return errors.New("fs: can't create a file that already exists")
+	}
 
-		cf.children[name] = &file{
-			isDir:   false,
-			parent:  cf,
-			name:    strings.Trim(name, "/"),
-			content: content,
-			path:    path,
-		}
+	// no parent means path is at root
+	if cf.parent == nil {
+		path = cf.path + name
+	} else {
+		path = cf.path + "/" + name
+	}
 
-		return nil, nil
-	})
+	cf.children[name] = &file{
+		isDir:   false,
+		parent:  cf,
+		name:    strings.Trim(name, "/"),
+		content: content,
+		path:    path,
+	}
 
-	return err
+	return nil
 }
 
 // DeleteFile deletes the file at a given path
 func (f *Fs) DeleteFile(path string) error {
-	_, err := f.currentDir.walkToParent(path, func(cf *file, name string) (interface{}, error) {
+	cf, name, err := f.currentDir.walkToParent(path)
 
-		if _, ok := cf.children[name]; !ok {
-			return nil, errors.New("fs: can't delete a file that doesn't exist")
-		}
+	if err != nil {
+		return err
+	}
 
-		delete(cf.children, name)
+	if _, ok := cf.children[name]; !ok {
+		return errors.New("fs: can't delete a file that doesn't exist")
+	}
 
-		return nil, nil
+	delete(cf.children, name)
 
-	})
-
-	return err
+	return nil
 }
 
 // ReadFile returns the content of a file at a given path
@@ -265,30 +269,31 @@ func (f *Fs) ReadFile(path string) ([]byte, error) {
 
 // EditFile edits a file in the current directory
 func (f *Fs) EditFile(path string, content []byte) error {
-	_, err := f.currentDir.walkToParent(path, func(cf *file, name string) (interface{}, error) {
-		if _, ok := cf.children[name]; !ok {
-			return nil, errors.New("fs: can't edit a file that doesn't exists")
-		}
+	cf, name, err := f.currentDir.walkToParent(path)
+	if err != nil {
+		return err
+	}
 
-		// no parent means path is at root
-		if cf.parent == nil {
-			path = cf.path + name
-		} else {
-			path = cf.path + "/" + name
-		}
+	if _, ok := cf.children[name]; !ok {
+		return errors.New("fs: can't edit a file that doesn't exists")
+	}
 
-		cf.children[name] = &file{
-			isDir:   false,
-			parent:  cf,
-			name:    strings.Trim(name, "/"),
-			content: content,
-			path:    path,
-		}
+	// no parent means path is at root
+	if cf.parent == nil {
+		path = cf.path + name
+	} else {
+		path = cf.path + "/" + name
+	}
 
-		return nil, nil
-	})
+	cf.children[name] = &file{
+		isDir:   false,
+		parent:  cf,
+		name:    strings.Trim(name, "/"),
+		content: content,
+		path:    path,
+	}
 
-	return err
+	return nil
 }
 
 // PrintWorkingDirectory returns the current directory's path
@@ -311,4 +316,3 @@ func New() Fs {
 		currentDir: root,
 	}
 }
-

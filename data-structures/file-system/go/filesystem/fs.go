@@ -5,13 +5,45 @@ import (
 	"strings"
 )
 
+var (
+	// ErrDuplicateDir is returned when an directory already exists
+	ErrDuplicateDir = errors.New("fs: can't create a directory that already exists")
+
+	// ErrDuplicateFile is returned when a file already exists
+	ErrDuplicateFile = errors.New("fs: can't create a file that already exists")
+
+	// ErrWalkFail is returned when a file doesn't exist and can't be walkted to
+	ErrWalkFail = errors.New("fs: can't walk to a file that doesn't exist")
+
+	// ErrListDirNotExist is returned when a directory doesn't exist and can't be ls'ed
+	ErrListDirNotExist = errors.New("fs: can't list items inside a directory that doesn't exist")
+
+	// ErrListInFile is returned when a file is tried to be ls'ed
+	ErrListInFile = errors.New("fs: can't list items inside a file")
+
+	// ErrCdInFile is returned when a file is tried to be cd'ed
+	ErrCdInFile = errors.New("fs: can't cd to a file")
+
+	// ErrReadDir is returned when a directory is tried to be read from
+	ErrReadDir = errors.New("fs: can't read content of a directory")
+
+	// ErrDeleteDirNotExist is returned when a directory doesn't exist and is tried to be deleted
+	ErrDeleteDirNotExist = errors.New("fs: can't delete a directory that doesn't exist")
+
+	// ErrDeleteFileNotExist is returned when a file doesn't exist and is tried to be deleted
+	ErrDeleteFileNotExist = errors.New("fs: can't delete a file that doesn't exist")
+
+	// ErrEditFileNotExist is returned when a file doesn't exist and is tried to be edited
+	ErrEditFileNotExist = errors.New("fs: can't edit a file that doesn't exist")
+)
+
 // Fs is the struct for the fileSystem
 type Fs struct {
 	root       *file
 	currentDir *file
 }
 
-// Children is the underlying map which for items
+// Children is the underlying map which contains the nodes
 type Children map[string]*file
 
 type file struct {
@@ -23,9 +55,10 @@ type file struct {
 	content  []byte
 }
 
-// File contains all the methods
+// File is the underyling node which cointains the necessary info
 type File interface {
 	walk(path string) (*file, error)
+	walkToParent(path string) (*file, string, error)
 }
 
 // file implementations
@@ -66,7 +99,7 @@ func (f *file) walk(path string) (*file, error) {
 	cf, ok := f.children[file]
 
 	if !ok {
-		return nil, errors.New("fs: can't walk to a file that doesn't exist")
+		return nil, ErrWalkFail
 	}
 
 	// we have reached the end of the path
@@ -100,12 +133,12 @@ func (f *file) walkToParent(path string) (*file, string, error) {
 		// the name is going to be our item but without the /
 		name = path[lastItem+1:]
 	} else if lastItem > -1 {
-			// for cases like /usr/share/local
-			// if we are trying to make a nested file, we should check if all the directories preceding it actually exist
-			// walk up until the last item
-			cf, err = f.walk(path[:lastItem])
-			// the name is going to be our last item
-			name = path[lastItem+1:]
+		// for cases like /usr/share/local
+		// if we are trying to make a nested file, we should check if all the directories preceding it actually exist
+		// walk up until the last item
+		cf, err = f.walk(path[:lastItem])
+		// the name is going to be our last item
+		name = path[lastItem+1:]
 	} else {
 		// for cases like usr
 		// if it's not nested, we can assume it's in the current directory
@@ -132,7 +165,7 @@ func (f *Fs) ChangeDir(path string) error {
 	}
 
 	if !cf.isDir {
-		return errors.New("fs: can't cd to a file")
+		return ErrCdInFile
 	}
 
 	f.currentDir = cf
@@ -149,7 +182,7 @@ func (f *Fs) CreateDir(path string) error {
 	}
 
 	if _, ok := cf.children[name]; ok {
-		return errors.New("fs: can't create a directory that already exists")
+		return ErrDuplicateDir
 	}
 
 	// no parent means path is at root
@@ -179,11 +212,11 @@ func (f *Fs) ListDirectoryContents(path string) (Children, error) {
 	}
 
 	if cf.children == nil {
-		return nil, errors.New("fs: can't list items inside a directory that doesn't exist")
+		return nil, ErrListDirNotExist
 	}
 
 	if !cf.isDir {
-		return nil, errors.New("fs: can't list items inside a file")
+		return nil, ErrListInFile
 	}
 
 	return cf.children, nil
@@ -198,7 +231,7 @@ func (f *Fs) DeleteDirectory(path string) error {
 	}
 
 	if _, ok := cf.children[name]; !ok {
-		return errors.New("fs: can't delete a directory that doesn't exist")
+		return ErrDeleteDirNotExist
 	}
 
 	delete(cf.children, name)
@@ -214,7 +247,7 @@ func (f *Fs) CreateFile(path string, content []byte) error {
 	}
 
 	if _, ok := cf.children[name]; ok {
-		return errors.New("fs: can't create a file that already exists")
+		return ErrDuplicateFile
 	}
 
 	// no parent means path is at root
@@ -244,7 +277,7 @@ func (f *Fs) DeleteFile(path string) error {
 	}
 
 	if _, ok := cf.children[name]; !ok {
-		return errors.New("fs: can't delete a file that doesn't exist")
+		return ErrDeleteFileNotExist
 	}
 
 	delete(cf.children, name)
@@ -261,7 +294,7 @@ func (f *Fs) ReadFile(path string) ([]byte, error) {
 	}
 
 	if cf.isDir {
-		return nil, errors.New("fs: can't read content of a directory")
+		return nil, ErrReadDir
 	}
 
 	return cf.content, nil
@@ -275,7 +308,7 @@ func (f *Fs) EditFile(path string, content []byte) error {
 	}
 
 	if _, ok := cf.children[name]; !ok {
-		return errors.New("fs: can't edit a file that doesn't exists")
+		return ErrEditFileNotExist
 	}
 
 	// no parent means path is at root

@@ -78,6 +78,49 @@ func (f *file) walk(path string) (*file, error) {
 	return cf.walk(strings.Join(rest, "/"))
 }
 
+// walkToParent walks up to the given path and returns the parent of the last file.
+func (f *file) walkToParent(path string, fn func(cf *file, name string) (interface{}, error)) (interface{}, error) {
+	// remove the trailing slash at the end
+	path = strings.TrimRight(path, "/")
+
+	// get the path up until the last element
+	lastItem := strings.LastIndex(path, "/")
+
+	var (
+		name string
+		cf   *file
+		err  error
+	)
+
+	// if the only slash is at the beginning, it's an absolute file
+	if lastItem == 0 {
+		// for cases like /usr
+		// walk up until the last item
+		cf, err = f.walk(path)
+		// the name is going to be our item but without the /
+		name = path[lastItem+1:]
+	} else if lastItem > -1 {
+		// for cases like /usr/share/local
+		// if we are trying to make a nested file, we should check if all the directories preceding it actually exist
+		// walk up until the last item
+		cf, err = f.walk(path[:lastItem])
+		// the name is going to be our last item
+		name = path[lastItem+1:]
+	} else {
+		// for cases like usr
+		// if it's not nested, we can assume it's in the current directory
+		cf = f
+		err = nil
+		name = path
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return fn(cf, name)
+}
+
 // fs implementations
 
 // ChangeDir changes to a directory
@@ -99,7 +142,7 @@ func (f *Fs) ChangeDir(path string) error {
 
 // CreateDir creates a new directory in the current directory
 func (f *Fs) CreateDir(path string) error {
-	_, err := f.getParent(path, func(cf *file, name string) (interface{}, error) {
+	_, err := f.currentDir.walkToParent(path, func(cf *file, name string) (interface{}, error) {
 		if _, ok := cf.children[name]; ok {
 			return nil, errors.New("fs: can't create a directory that already exists")
 		}
@@ -146,7 +189,7 @@ func (f *Fs) ListDirectoryContents(path string) (Children, error) {
 
 // DeleteDirectory deletes the directory at a given path
 func (f *Fs) DeleteDirectory(path string) error {
-	_, err := f.getParent(path, func(cf *file, name string) (interface{}, error) {
+	_, err := f.currentDir.walkToParent(path, func(cf *file, name string) (interface{}, error) {
 		if _, ok := cf.children[name]; !ok {
 			return nil, errors.New("fs: can't delete a directory that doesn't exist")
 		}
@@ -162,7 +205,7 @@ func (f *Fs) DeleteDirectory(path string) error {
 
 // CreateFile creates a new file in the current directory
 func (f *Fs) CreateFile(path string, content []byte) error {
-	_, err := f.getParent(path, func(cf *file, name string) (interface{}, error) {
+	_, err := f.currentDir.walkToParent(path, func(cf *file, name string) (interface{}, error) {
 		if _, ok := cf.children[name]; ok {
 			return nil, errors.New("fs: can't create a file that already exists")
 		}
@@ -190,7 +233,7 @@ func (f *Fs) CreateFile(path string, content []byte) error {
 
 // DeleteFile deletes the file at a given path
 func (f *Fs) DeleteFile(path string) error {
-	_, err := f.getParent(path, func(cf *file, name string) (interface{}, error) {
+	_, err := f.currentDir.walkToParent(path, func(cf *file, name string) (interface{}, error) {
 
 		if _, ok := cf.children[name]; !ok {
 			return nil, errors.New("fs: can't delete a file that doesn't exist")
@@ -222,7 +265,7 @@ func (f *Fs) ReadFile(path string) ([]byte, error) {
 
 // EditFile edits a file in the current directory
 func (f *Fs) EditFile(path string, content []byte) error {
-	_, err := f.getParent(path, func(cf *file, name string) (interface{}, error) {
+	_, err := f.currentDir.walkToParent(path, func(cf *file, name string) (interface{}, error) {
 		if _, ok := cf.children[name]; !ok {
 			return nil, errors.New("fs: can't edit a file that doesn't exists")
 		}
@@ -269,45 +312,3 @@ func New() Fs {
 	}
 }
 
-// getParent walks up to the given path and returns the parent of the last file.
-func (f *Fs) getParent(path string, fn func(cf *file, name string) (interface{}, error)) (interface{}, error) {
-	// remove the trailing slash at the end
-	path = strings.TrimRight(path, "/")
-
-	// get the path up until the last element
-	lastItem := strings.LastIndex(path, "/")
-
-	var (
-		name string
-		cf   *file
-		err  error
-	)
-
-	// if the only slash is at the beginning, it's an absolute file
-	if lastItem == 0 {
-		// for cases like /usr
-		// walk up until the last item
-		cf, err = f.currentDir.walk(path)
-		// the name is going to be our item but without the /
-		name = path[lastItem+1:]
-	} else if lastItem > -1 {
-		// for cases like /usr/share/local
-		// if we are trying to make a nested file, we should check if all the directories preceding it actually exist
-		// walk up until the last item
-		cf, err = f.currentDir.walk(path[:lastItem])
-		// the name is going to be our last item
-		name = path[lastItem+1:]
-	} else {
-		// for cases like usr
-		// if it's not nested, we can assume it's in the current directory
-		cf = f.currentDir
-		err = nil
-		name = path
-	}
-
-	if err != nil {
-		return nil, err
-	}
-
-	return fn(cf, name)
-}

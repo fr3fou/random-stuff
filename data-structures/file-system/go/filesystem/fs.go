@@ -99,210 +99,110 @@ func (f *Fs) ChangeDir(path string) error {
 
 // CreateDir creates a new directory in the current directory
 func (f *Fs) CreateDir(path string) error {
-	// get the path up until the last element
-	lastItem := strings.LastIndex(path, "/")
+	_, err := parsePath(path, f, func(cf *file, name string) (interface{}, error) {
 
-	var (
-		name string
-		cf   *file
-		err  error
-	)
+		if _, ok := cf.children[name]; ok {
+			return nil, errors.New("fs: can't create a directory that already exists")
+		}
 
-	// if we are trying to make a nested directory, we should check if all the directories preceding it actually exist
-	if lastItem > -1 {
-		// walk up until the last item
-		cf, err = f.currentDir.walk(path[:lastItem])
-		// the name is going to be our last item
-		name = path[lastItem+1:]
-	} else {
-		cf = f.currentDir
-		err = nil
-		name = path
-	}
+		// no parent means path is at root
+		if cf.parent == nil {
+			path = cf.path + name
+		} else {
+			path = cf.path + "/" + name
+		}
 
-	if err != nil {
-		return err
-	}
+		cf.children[name] = &file{
+			isDir:    true,
+			parent:   cf,
+			name:     strings.Trim(name, "/"),
+			children: make(Children),
+			path:     path,
+		}
 
-	if _, ok := cf.children[name]; ok {
-		return errors.New("fs: can't create a directory that already exists")
-	}
+		return nil, nil
+	})
 
-	// no parent means path is at root
-	if cf.parent == nil {
-		path = cf.path + name
-	} else {
-		path = cf.path + "/" + name
-	}
-
-	cf.children[name] = &file{
-		isDir:    true,
-		parent:   cf,
-		name:     strings.Trim(name, "/"),
-		children: make(Children),
-		path:     path,
-	}
-
-	return nil
+	return err
 }
 
 // ListDirectoryContents lists all of the items inside a directory
 func (f *Fs) ListDirectoryContents(path string) (Children, error) {
-	// get the path up until the last element
-	lastItem := strings.LastIndex(path, "/")
+	children, err := parsePath(path, f, func(cf *file, name string) (interface{}, error) {
+		if _, ok := cf.children[name]; !ok {
+			return nil, errors.New("fs: can't list items inside a directory that doesn't exist")
+		}
 
-	var (
-		name string
-		cf   *file
-		err  error
-	)
+		return cf.children, nil
+	})
 
-	// if we are trying to ls a nested directory, we should check if all the directories preceding it actually exist
-	if lastItem > -1 {
-		// walk up until the last item
-		cf, err = f.currentDir.walk(path[:lastItem])
-		// the name is going to be our last item
-		name = path[lastItem+1:]
-	} else {
-		// if it's not nested, we can assume it's in the current directory
-		cf = f.currentDir
-		err = nil
-		name = path
-	}
-
-	if err != nil {
+	if children == nil {
 		return nil, err
 	}
 
-	if _, ok := cf.children[name]; !ok {
-		return nil, errors.New("fs: can't list items inside a directory that doesn't exist")
-	}
-
-	return cf.children, nil
+	return children.(Children), nil
 }
 
 // DeleteDirectory deletes the directory at a given path
 func (f *Fs) DeleteDirectory(path string) error {
-	// get the path up until the last element
-	lastItem := strings.LastIndex(path, "/")
+	_, err := parsePath(path, f, func(cf *file, name string) (interface{}, error) {
+		if _, ok := cf.children[name]; !ok {
+			return nil, errors.New("fs: can't delete a directory that doesn't exist")
+		}
 
-	var (
-		name string
-		cf   *file
-		err  error
-	)
+		delete(cf.children, name)
 
-	// if we are trying to make a nested directory, we should check if all the directorie preceding it actually exist
-	if lastItem > -1 {
-		// walk up until the last item
-		cf, err = f.currentDir.walk(path[:lastItem])
-		// the name is going to be our last item
-		name = path[lastItem+1:]
-	} else {
-		// if it's not nested, we can assume it's in the current directory
-		cf = f.currentDir
-		err = nil
-		name = path
-	}
+		return nil, nil
 
-	if err != nil {
-		return err
-	}
+	})
 
-	if _, ok := cf.children[name]; !ok {
-		return errors.New("fs: can't delete a directory that doesn't exist")
-	}
-
-	delete(cf.children, name)
-
-	return nil
+	return err
 }
 
 // CreateFile creates a new file in the current directory
 func (f *Fs) CreateFile(path string, content []byte) error {
-	// get the path up until the last element
-	lastItem := strings.LastIndex(path, "/")
+	_, err := parsePath(path, f, func(cf *file, name string) (interface{}, error) {
 
-	var (
-		name string
-		cf   *file
-		err  error
-	)
+		if _, ok := cf.children[name]; ok {
+			return nil, errors.New("fs: can't create a file that already exists")
+		}
 
-	// if we are trying to make a nested file, we should check if all the directories preceding it actually exist
-	if lastItem > -1 {
-		// walk up until the last item
-		cf, err = f.currentDir.walk(path[:lastItem])
-		// the name is going to be our last item
-		name = path[lastItem+1:]
-	} else {
-		// if it's not nested, we can assume it's in the current directory
-		cf = f.currentDir
-		err = nil
-		name = path
-	}
+		// no parent means path is at root
+		if cf.parent == nil {
+			path = cf.path + name
+		} else {
+			path = cf.path + "/" + name
+		}
 
-	if err != nil {
-		return err
-	}
+		cf.children[name] = &file{
+			isDir:   false,
+			parent:  cf,
+			name:    strings.Trim(name, "/"),
+			content: content,
+			path:    path,
+		}
 
-	if _, ok := cf.children[name]; ok {
-		return errors.New("fs: can't create a file that already exists")
-	}
+		return nil, nil
+	})
 
-	// no parent means path is at root
-	if cf.parent == nil {
-		path = cf.path + name
-	} else {
-		path = cf.path + "/" + name
-	}
-
-	cf.children[name] = &file{
-		isDir:   false,
-		parent:  cf,
-		name:    strings.Trim(name, "/"),
-		content: content,
-		path:    path,
-	}
-
-	return nil
+	return err
 }
 
 // DeleteFile deletes the file at a given path
 func (f *Fs) DeleteFile(path string) error {
-	// get the path up until the last element
-	lastItem := strings.LastIndex(path, "/")
+	_, err := parsePath(path, f, func(cf *file, name string) (interface{}, error) {
 
-	var (
-		name string
-		cf   *file
-		err  error
-	)
+		if _, ok := cf.children[name]; !ok {
+			return nil, errors.New("fs: can't delete a file that doesn't exist")
+		}
 
-	// if we are trying to make a nested directory, we should check if all the directorie preceding it actually exist
-	if lastItem > -1 {
-		// walk up until the last item
-		cf, err = f.currentDir.walk(path[:lastItem])
-		// the name is going to be our last item
-		name = path[lastItem+1:]
-	} else {
-		// if it's not nested, we can assume it's in the current directory
-		cf = f.currentDir
-		err = nil
-		name = path
-	}
+		delete(cf.children, name)
 
-	if err != nil {
-		return err
-	}
+		return nil, nil
 
-	if _, ok := cf.children[name]; !ok {
-		return errors.New("fs: can't delete a file that doesn't exist")
-	}
+	})
 
-	delete(cf.children, name)
-
-	return nil
+	return err
 }
 
 // ReadFile returns the content of a file at a given path
@@ -318,6 +218,39 @@ func (f *Fs) ReadFile(path string) ([]byte, error) {
 	}
 
 	return cf.content, nil
+}
+
+// EditFile edits a file in the current directory
+func (f *Fs) EditFile(path string, content []byte) error {
+	_, err := parsePath(path, f, func(cf *file, name string) (interface{}, error) {
+		if _, ok := cf.children[name]; !ok {
+			return nil, errors.New("fs: can't edit a file that doesn't exists")
+		}
+
+		// no parent means path is at root
+		if cf.parent == nil {
+			path = cf.path + name
+		} else {
+			path = cf.path + "/" + name
+		}
+
+		cf.children[name] = &file{
+			isDir:   false,
+			parent:  cf,
+			name:    strings.Trim(name, "/"),
+			content: content,
+			path:    path,
+		}
+
+		return nil, nil
+	})
+
+	return err
+}
+
+// PrintWorkingDirectory returns the current directory's path
+func (f *Fs) PrintWorkingDirectory() string {
+	return f.currentDir.path
 }
 
 // New creates a new fileSystem
@@ -336,8 +269,7 @@ func New() Fs {
 	}
 }
 
-// EditFile edits a file in the current directory
-func (f *Fs) EditFile(path string, content []byte) error {
+func parsePath(path string, f *Fs, fn func(cf *file, name string) (interface{}, error)) (interface{}, error) {
 	// get the path up until the last element
 	lastItem := strings.LastIndex(path, "/")
 
@@ -361,40 +293,8 @@ func (f *Fs) EditFile(path string, content []byte) error {
 	}
 
 	if err != nil {
-		return err
+		return err, nil
 	}
 
-	if _, ok := cf.children[name]; !ok {
-		return errors.New("fs: can't edit a file that doesn't exists")
-	}
-
-	// no parent means path is at root
-	if cf.parent == nil {
-		path = cf.path + name
-	} else {
-		path = cf.path + "/" + name
-	}
-
-	cf.children[name] = &file{
-		isDir:   false,
-		parent:  cf,
-		name:    strings.Trim(name, "/"),
-		content: content,
-		path:    path,
-	}
-
-	return nil
-}
-
-// PrintWorkingDirectory returns the current directory's path
-func (f *Fs) PrintWorkingDirectory() string {
-	return f.currentDir.path
-}
-
-func parsePath(str string) []string {
-	s := strings.FieldsFunc(str, func(c rune) bool {
-		return c == '/'
-	})
-
-	return s
+	return fn(cf, name)
 }

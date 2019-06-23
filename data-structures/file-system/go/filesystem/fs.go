@@ -177,6 +177,10 @@ func (f *Fs) ChangeDir(path string) error {
 func (f *Fs) CreateDir(path string) error {
 	cf, name, err := f.currentDir.walkToParent(path)
 
+	if name == ".." {
+		return ErrDuplicateDir
+	}
+
 	if err != nil {
 		return err
 	}
@@ -242,6 +246,11 @@ func (f *Fs) DeleteDirectory(path string) error {
 // CreateFile creates a new file in the current directory
 func (f *Fs) CreateFile(path string, content []byte) error {
 	cf, name, err := f.currentDir.walkToParent(path)
+
+	if name == ".." {
+		return ErrDuplicateFile
+	}
+
 	if err != nil {
 		return err
 	}

@@ -93,3 +93,38 @@ func TestCreateDir(t *testing.T) {
 	t.Run("/usr/share/this/is-bad", failCreate("usr/share/this/is-bad", ErrWalkFail, false))
 	t.Run("/usr/share/", failCreate("usr/share/", ErrDuplicateDir, true))
 }
+
+func TestChangeDir(t *testing.T) {
+	fs := New()
+
+	fs.CreateDir("usr")
+
+	succChange := func(name string) func(t *testing.T) {
+		return func(t *testing.T) {
+			err := fs.ChangeDir(name)
+
+			if err != nil {
+				t.Errorf("filesystem.ChangeDir(%s) returned an error %s", name, err)
+			}
+
+			fs.ChangeDir("/")
+		}
+	}
+
+	t.Run("usr", succChange("usr"))
+	t.Run("usr/", succChange("usr/"))
+	t.Run("/usr/", succChange("/usr/"))
+	t.Run("/usr", succChange("/usr"))
+
+	// Nested cd
+	fs.CreateDir("/usr/share")
+
+	t.Run("/usr/share", succChange("/usr/share"))
+	t.Run("usr/share", succChange("usr/share"))
+}
+
+// func TestWalk(t *testing.T) {
+// 	fs := New()
+
+// 	fs.currentDir.walk("")
+// }

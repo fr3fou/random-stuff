@@ -123,8 +123,36 @@ func TestChangeDir(t *testing.T) {
 	t.Run("usr/share", succChange("usr/share"))
 }
 
-// func TestWalk(t *testing.T) {
-// 	fs := New()
+func TestWalk(t *testing.T) {
+	fs := New()
 
-// 	fs.currentDir.walk("")
-// }
+	fs.CreateDir("usr")
+	fs.CreateDir("usr/share")
+
+	succWalk := func(name string, node *file) func(t *testing.T) {
+		return func(t *testing.T) {
+			walk, err := fs.currentDir.walk(name)
+
+			if err != nil {
+				t.Errorf("f.walk(%s) returned an error %s", name, err)
+			}
+
+			if !reflect.DeepEqual(walk, node) {
+				t.Errorf("f.Walk(%s) didn't return the correct node at %s", name, name)
+			}
+		}
+	}
+
+	t.Run("usr/share from /", succWalk("usr/share", fs.currentDir.children["usr"].children["share"]))
+	t.Run("usr from /", succWalk("usr", fs.currentDir.children["usr"]))
+
+	fs.ChangeDir("usr")
+
+	t.Run("../ from usr", succWalk("../", fs.currentDir.parent))
+
+	fs.ChangeDir("share")
+
+	t.Run("../../ from /usr/share", succWalk("../../", fs.currentDir.parent.parent))
+
+	t.Run("/usr from /usr/share", succWalk("/usr", fs.currentDir.parent))
+}

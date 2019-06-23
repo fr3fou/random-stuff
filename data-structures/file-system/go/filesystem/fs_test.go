@@ -90,5 +90,6 @@ func TestCreateDir(t *testing.T) {
 
 	t.Run("usr/share/this/is-bad", failCreate("usr/share/this/is-bad", ErrWalkFail, false))
 	t.Run("usr/share/", failCreate("usr/share/", ErrDuplicateDir, true))
-
+	t.Run("/usr/share/this/is-bad", failCreate("usr/share/this/is-bad", ErrWalkFail, false))
+	t.Run("/usr/share/", failCreate("usr/share/", ErrDuplicateDir, true))
 }

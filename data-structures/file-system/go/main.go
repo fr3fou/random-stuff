@@ -53,6 +53,12 @@ func main() {
 			fs.ChangeDir(strings.Join(args, " "))
 		case "touch":
 			fs.CreateFile(args[0], []byte(strings.Join(args[1:], " ")))
+		case "rm":
+			if args[0] == "-r" {
+				fs.DeleteDirectory(strings.Join(args[1:], " "))
+			} else {
+				fs.DeleteFile(strings.Join(args, " "))
+			}
 		case "cat":
 			content, err := fs.ReadFile(strings.Join(args, " "))
 

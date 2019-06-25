@@ -100,7 +100,7 @@ func main() {
 			}
 
 		case "cat":
-			if len(args) > 1 {
+			if len(args) >= 1 {
 				content, err := fs.ReadFile(strings.Join(args, " "))
 
 				if err != nil {

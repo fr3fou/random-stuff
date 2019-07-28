@@ -26,6 +26,7 @@ func findPrimes(n int) []int {
 	nums := make([]int, n, n)
 	primes := make([]int, 0)
 
+	// Fill up the array with all the numbers
 	for i := 2; i < n; i++ {
 		nums[i] = i
 	}
@@ -46,6 +47,7 @@ func findPrimes(n int) []int {
 		primes = append(primes, p)
 	}
 
+	// Remove the last 2 (to compensate for starting from 2)
 	primes = primes[:len(primes)-2]
 
 	return primes

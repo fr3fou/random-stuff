@@ -21,6 +21,14 @@ func main() {
 }
 
 func findPrimes(n int) []int {
+	if n < 2 {
+		return []int{}
+	}
+
+	if n < 5 {
+		return []int{2}
+	}
+
 	// Create a list of consecutive integers from 2 through n
 	// (2, 3, 4, ..., n)
 	nums := make([]int, n, n)

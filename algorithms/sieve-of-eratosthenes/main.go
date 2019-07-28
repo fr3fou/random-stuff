@@ -17,10 +17,16 @@ func main() {
 		panic(err)
 	}
 
-	findPrimes(n)
+	primes := make(chan int)
+
+	go findPrimes(n, primes)
+
+	for val := range primes {
+		fmt.Println(val)
+	}
 }
 
-func findPrimes(n int) {
+func findPrimes(n int, primes chan int) {
 	// Create a list of consecutive integers from 2 through n
 	// (2, 3, 4, ..., n)
 	nums := make([]int, n, n)
@@ -30,6 +36,7 @@ func findPrimes(n int) {
 
 	// Initially, let p equal 2, the smallest prime number
 	p := 2
+	fmt.Println(p)
 
 	for {
 		np := primeSieve(p, p, n, nums)
@@ -40,13 +47,10 @@ func findPrimes(n int) {
 		}
 
 		p = np
+		primes <- p
 	}
 
-	for i, v := range nums {
-		if v != -1 {
-			fmt.Println(i)
-		}
-	}
+	close(primes)
 }
 
 // primeSieve takes in p (current num)

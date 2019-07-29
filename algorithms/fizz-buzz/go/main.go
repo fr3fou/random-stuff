@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func main() {
 	for i := 1; i < 100; i++ {
@@ -14,15 +17,16 @@ func main() {
 }
 
 func fizBuzz(n int) string {
-	answer := ""
+	var answer strings.Builder
+	answer.Grow(4)
 
 	if n%3 == 0 {
-		answer += "Fiz"
+		answer.WriteString("Fiz")
 	}
 
 	if n%5 == 0 {
-		answer += "Buzz"
+		answer.WriteString("Buzz")
 	}
 
-	return answer
+	return answer.String()
 }

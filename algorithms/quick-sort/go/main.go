@@ -23,16 +23,12 @@ func partition(arr []int, low int, high int) (i int) {
 	for i := low; i < high; i++ {
 		if arr[i] <= pivot {
 			minIndex++
-			swap(&arr[minIndex], &arr[i])
+			// swap
+			arr[minIndex], arr[i] = arr[i], arr[minIndex]
 		}
 	}
-	swap(&arr[minIndex+1], &arr[high])
+	// swap
+	arr[minIndex+1], arr[high] = arr[high], arr[minIndex+1]
 	return minIndex + 1
 
-}
-
-func swap(a *int, b *int) {
-	temp := *a
-	*a = *b
-	*b = temp
 }

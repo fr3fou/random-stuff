@@ -16,7 +16,7 @@ func quickSort(arr []int, low int, high int) {
 	}
 }
 
-func partition(arr []int, low int, high int) (i int) {
+func partition(arr []int, low int, high int) int {
 	pivot := arr[high]
 	minIndex := low - 1
 
@@ -27,6 +27,7 @@ func partition(arr []int, low int, high int) (i int) {
 			arr[minIndex], arr[i] = arr[i], arr[minIndex]
 		}
 	}
+
 	// swap
 	arr[minIndex+1], arr[high] = arr[high], arr[minIndex+1]
 	return minIndex + 1

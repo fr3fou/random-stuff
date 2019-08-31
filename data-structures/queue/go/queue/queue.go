@@ -37,3 +37,8 @@ func (q *Queue) Contains(n int) bool {
 
 	return false
 }
+
+// Clear clears all of the elements in the array
+func (q *Queue) Clear() {
+	q.array = []int{}
+}

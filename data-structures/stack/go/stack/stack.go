@@ -28,6 +28,19 @@ func (s *Stack) Peek() int {
 	return s.array[len(s.array)-1]
 }
 
+// Contains checks if the given element is inside the stack
+func (s *Stack) Contains(n int) bool {
+	for _, el := range s.array {
+		if el == n {
+			return true
+
+		}
+
+	}
+
+	return false
+}
+
 // Clear clears the stack
 func (s *Stack) Clear() {
 	s.array = []int{}

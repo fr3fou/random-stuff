@@ -27,3 +27,13 @@ func (s *Stack) Pop() int {
 func (s *Stack) Peek() int {
 	return s.array[len(s.array)-1]
 }
+
+// Length returns the length of the stack
+func (s *Stack) Length() int {
+	return len(s.array)
+}
+
+// Clear clears the stack
+func (s *Stack) Clear() {
+	s.array = []int{}
+}

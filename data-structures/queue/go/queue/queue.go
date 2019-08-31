@@ -42,3 +42,8 @@ func (q *Queue) Contains(n int) bool {
 func (q *Queue) Clear() {
 	q.array = []int{}
 }
+
+// Length returns the length of the queue
+func (q *Queue) Length() int {
+	return len(q.array)
+}

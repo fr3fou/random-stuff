@@ -33,9 +33,7 @@ func (s *Stack) Contains(n int) bool {
 	for _, el := range s.array {
 		if el == n {
 			return true
-
 		}
-
 	}
 
 	return false

@@ -13,4 +13,5 @@ func main() {
 	fmt.Println(q.Dequeue())
 	fmt.Println(q.Contains(5))
 	q.Clear()
+	fmt.Println(q.Length())
 }

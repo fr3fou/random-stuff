@@ -26,3 +26,14 @@ func (q *Queue) Dequeue() int {
 func (q *Queue) Peek() int {
 	return q.array[0]
 }
+
+// Contains checks if the given element is inside the array
+func (q *Queue) Contains(n int) bool {
+	for _, el := range q.array {
+		if el == n {
+			return true
+		}
+	}
+
+	return false
+}

@@ -1,4 +1,5 @@
 #include<stdlib.h>
+
 typedef struct Node {
     int Value;
     struct Node *Next;
@@ -14,13 +15,22 @@ void add(Node* n, int v) {
     n->Next = temp;
 } 
 
+void print(Node* n) {
+    Node *next = n;
+
+    while (next->Value && next->Next && next->Next->Value) {
+        printf("%d -> %d\n", next->Value, next->Next->Value);
+        next = next->Next;
+    }
+}
+
 void reverse(Node* n) {
     Node *prev, *current, *next;
 
     current = n;
     next = n->Next;
 
-    while (!next) {
+    while (next) {
         current->Next = prev;
 
         Node *temp = next->Next;
@@ -33,3 +43,4 @@ void reverse(Node* n) {
 
     n = current;
 }
+

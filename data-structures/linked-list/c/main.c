@@ -21,7 +21,8 @@ int main(void) {
     printf("%i\n", node.Next->Value);
     printf("%i\n", node.Next->Next->Value);
 
-    reverse(&node);
+    /* reverse(&node); */
+    print(&node);
 
     printf("after reversing\n");
     printf("%i\n", node.Value);

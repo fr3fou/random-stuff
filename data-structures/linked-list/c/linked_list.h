@@ -16,11 +16,13 @@ void add(Node* n, int v) {
 } 
 
 void print(Node* n) {
-    Node *next = n;
+    for (Node *next = n; next != NULL; next = next->Next) {
+        if (next->Next == NULL) {
+            printf("%d -> NULL\n", next->Value);
+            return;
+        }
 
-    while (next->Value && next->Next && next->Next->Value) {
         printf("%d -> %d\n", next->Value, next->Next->Value);
-        next = next->Next;
     }
 }
 

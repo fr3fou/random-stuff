@@ -6,20 +6,28 @@ int main(void) {
     node.Value = 1;
 
     Node node1;
-    node1.Value = 2;
+    node1.Value = 3;
 
     node.Next = &node1;
 
+    printf("before adding\n");
     printf("%i\n", node.Value);
     printf("%i\n", node.Next->Value);
-    printf("before adding\n");
 
-    add(&node, 5);
+    add(&node, 2);
 
     printf("after adding\n");
     printf("%i\n", node.Value);
     printf("%i\n", node.Next->Value);
     printf("%i\n", node.Next->Next->Value);
+
+    reverse(&node);
+
+    printf("after reversing\n");
+    printf("%i\n", node.Value);
+    printf("%i\n", node.Next->Value);
+    printf("%i\n", node.Next->Next->Value);
+
 
     return 0;
 }

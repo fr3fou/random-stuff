@@ -1,3 +1,4 @@
+#include<stdlib.h>
 typedef struct Node {
     int Value;
     struct Node *Next;
@@ -6,8 +7,9 @@ typedef struct Node {
 void add(Node* n, int v) {
     Node *next = n->Next;
 
-    Node temp;
-    temp.Value = v;
+    Node *temp = malloc(sizeof(Node));
+    temp->Value = v;
+    temp->Next = next;
 
-    n->Next = &temp;
+    n->Next = temp;
 } 

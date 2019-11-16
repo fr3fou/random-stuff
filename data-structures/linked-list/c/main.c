@@ -47,5 +47,8 @@ int main(void) {
     printf("after adding to end\n");
     print(node);
 
+    free(node);
+    free(node1);
+
     return 0;
 }

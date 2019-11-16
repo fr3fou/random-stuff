@@ -1,3 +1,4 @@
+#include<stdbool.h>
 #include<stdlib.h>
 
 typedef struct Node {
@@ -48,3 +49,12 @@ Node *reverse(Node *n) {
     return current;
 }
 
+bool contains(Node *n, int v) {
+    for (Node *next = n; next != NULL; next = next->Next) {
+        if(next->Value == v) {
+            return true;
+        }
+    }
+
+    return false;
+}

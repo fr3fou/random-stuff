@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdbool.h>
 #include "./linked_list.h"
 
 int main(void) {
@@ -24,6 +25,22 @@ int main(void) {
 
     printf("after reversing\n");
     print(node);
+
+    bool contains2 = contains(node, 2);
+
+    if(contains2) {
+        printf("the list contains 2");
+    } else {
+        printf("the list doesn't contain 2");
+    }
+
+    bool contains9 = contains(node, 9);
+
+    if(contains9) {
+        printf("the list contains 9");
+    } else {
+        printf("the list doesn't contain 9");
+    }
 
     return 0;
 }

@@ -16,6 +16,22 @@ void add(Node *n, int v) {
     n->Next = temp;
 } 
 
+void add_to_end(Node *n, int v) {
+    if(n->Value == 0) {
+        n->Value = v;
+        return;
+    }
+
+    if (n->Next == NULL) {
+        Node *temp = malloc(sizeof(Node));
+        temp->Value = v;
+        n->Next = temp;
+        return;
+    }
+
+    add_to_end(n->Next, v);
+}
+
 void print(Node *n) {
     for (Node *next = n; next != NULL; next = next->Next) {
         // end case

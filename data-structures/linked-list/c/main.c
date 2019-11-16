@@ -29,18 +29,23 @@ int main(void) {
     bool contains2 = contains(node, 2);
 
     if(contains2) {
-        printf("the list contains 2");
+        printf("the list contains 2\n");
     } else {
-        printf("the list doesn't contain 2");
+        printf("the list doesn't contain 2\n");
     }
 
     bool contains9 = contains(node, 9);
 
     if(contains9) {
-        printf("the list contains 9");
+        printf("the list contains 9\n");
     } else {
-        printf("the list doesn't contain 9");
+        printf("the list doesn't contain 9\n");
     }
+
+    add_to_end(node, 10);
+
+    printf("after adding to end\n");
+    print(node);
 
     return 0;
 }

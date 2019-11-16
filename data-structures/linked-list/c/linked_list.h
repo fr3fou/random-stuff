@@ -28,7 +28,7 @@ void print(Node *n) {
     }
 }
 
-void reverse(Node *n) {
+Node *reverse(Node *n) {
     Node *prev, *current, *next;
 
     prev = NULL;
@@ -45,6 +45,6 @@ void reverse(Node *n) {
         next = temp;
     }
 
-    n = current;
+    return current;
 }
 

@@ -16,9 +16,6 @@ int main(void) {
     print(node);
 
     add(node, 2);
-    add(node, 3);
-    add(node, 4);
-    add(node, 5);
 
     printf("after adding\n");
     print(node);

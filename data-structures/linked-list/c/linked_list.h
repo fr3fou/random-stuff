@@ -5,7 +5,7 @@ typedef struct Node {
     struct Node *Next;
 } Node;
 
-void add(Node* n, int v) {
+void add(Node *n, int v) {
     Node *next = n->Next;
 
     Node *temp = malloc(sizeof(Node));
@@ -15,26 +15,28 @@ void add(Node* n, int v) {
     n->Next = temp;
 } 
 
-void print(Node* n) {
+void print(Node *n) {
     for (Node *next = n; next != NULL; next = next->Next) {
+        // end case
         if (next->Next == NULL) {
             printf("%d -> NULL\n", next->Value);
             return;
         }
 
+        // normal case
         printf("%d -> %d\n", next->Value, next->Next->Value);
     }
 }
 
-void reverse(Node* n) {
+void reverse(Node **n) {
     Node *prev, *current, *next;
 
+    prev = NULL;
     current = n;
     next = n->Next;
 
-    while (next) {
+    while (next != NULL) {
         current->Next = prev;
-
         Node *temp = next->Next;
         next->Next = current;
         

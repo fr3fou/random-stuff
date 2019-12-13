@@ -70,5 +70,9 @@ reverse' :: [a] -> [a]
 reverse' [] = []
 reverse' (x:xs) = (reverse' xs) ++ [x]
 
+map' :: (a -> b) -> [a] -> [b]
+map' _ [] = []
+map' f (x:xs) = f x : map' f xs
+
 main :: IO ()
 main = print "ok"

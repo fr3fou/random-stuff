@@ -74,5 +74,8 @@ map' :: (a -> b) -> [a] -> [b]
 map' _ [] = []
 map' f (x:xs) = f x : map' f xs
 
+amap :: (a -> b) -> (e -> a) -> (e -> b)
+amap f g = f . g
+
 main :: IO ()
 main = print "ok"

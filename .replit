@@ -1,2 +1,2 @@
-language = "haskell"
-run = "ghci algorithms/misc/hs/main.hs"
+language = "javascript"
+run = ""

@@ -57,7 +57,7 @@ maximum' (x:xs) = max' x (maximum' xs)
 
 replicate' :: (Num i, Ord i) => i -> a -> [a]
 replicate' n x
-    | n < 0 = []
+    | n <= 0 = []
     | otherwise = x:replicate' (n-1) x
 
 take' :: (Num i, Ord i) => i -> [a] -> [a]
@@ -69,6 +69,13 @@ take' n (x:xs) = x:take' (n-1) xs
 reverse' :: [a] -> [a]
 reverse' [] = []
 reverse' (x:xs) = (reverse' xs) ++ [x]
+
+map' :: (a -> b) -> [a] -> [b]
+map' _ [] = []
+map' f (x:xs) = f x : map' f xs
+
+amap :: (a -> b) -> (e -> a) -> (e -> b)
+amap f g = f . g
 
 main :: IO ()
 main = print "ok"

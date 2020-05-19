@@ -10,7 +10,7 @@ func main() {
 	// scanner.Scan()
 	// input := scanner.Text()
 	// words := strings.Split(input, " ")
-	fmt.Println(Lev("cat", "bot"))
+	fmt.Println(Lev("Bckedro", "Bedrock"))
 }
 
 func Lev(a, b string) int {

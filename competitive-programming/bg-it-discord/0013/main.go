@@ -1,16 +1,81 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"math"
+	"os"
+	"strings"
 )
 
 func main() {
-	// scanner := bufio.NewScanner(os.Stdin)
-	// scanner.Scan()
-	// input := scanner.Text()
-	// words := strings.Split(input, " ")
-	fmt.Println(Lev("Bckedro", "Bedrock"))
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	input := scanner.Text()
+	words := strings.Split(input, " ")
+
+	for _, word := range words {
+		if Solve(words, word) {
+			fmt.Println(true)
+			return
+		}
+	}
+
+	fmt.Println(false)
+}
+
+func Solve(words []string, target string) bool {
+	// if len(words) <= 1 {
+	// 	return true
+	// }
+
+	ds := dists(words, target)
+
+	for j := range ds {
+		ignored := ignore(words, target)
+		if Solve(ignored, words[j]) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func ignore(words []string, first string) []string {
+	sl := make([]string, len(words)-1)
+
+	index := 0
+	for i := 0; i < len(words); i++ {
+		if words[i] == first {
+			continue
+		}
+
+		sl[index] = words[i]
+		index++
+	}
+
+	return sl
+}
+
+// compare against every other word for distance
+// and find the 1st one that has a distance < 1
+func dists(words []string, target string) []int {
+	ds := []int{}
+
+	for j := 0; j < len(words); j++ {
+		// prevent comparision against self
+		word := words[j]
+
+		if word == target {
+			continue
+		}
+
+		if Lev(word, target) < 2 {
+			ds = append(ds, j)
+		}
+	}
+
+	return ds
 }
 
 func Lev(a, b string) int {

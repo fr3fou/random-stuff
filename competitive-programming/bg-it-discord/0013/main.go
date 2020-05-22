@@ -14,18 +14,21 @@ func main() {
 	input := scanner.Text()
 	words := strings.Split(input, " ")
 
+	fmt.Println(Solve(words))
+}
+
+func Solve(words []string) bool {
 	for i := range words {
 		visited := make([]bool, len(words))
-		if Solve(words, i, visited) {
-			fmt.Println(true)
-			return
+		if solve(words, i, visited) {
+			return true
 		}
 	}
 
-	fmt.Println(false)
+	return false
 }
 
-func Solve(words []string, index int, visited []bool) bool {
+func solve(words []string, index int, visited []bool) bool {
 	ok := true
 	for _, node := range visited {
 		if !node {
@@ -44,7 +47,7 @@ func Solve(words []string, index int, visited []bool) bool {
 		}
 
 		visited[i] = true
-		if Solve(words, i, visited) {
+		if solve(words, i, visited) {
 			return true
 		}
 		visited[i] = false

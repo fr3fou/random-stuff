@@ -25,14 +25,10 @@ func main() {
 }
 
 func Solve(words []string, target string) bool {
-	// if len(words) <= 1 {
-	// 	return true
-	// }
-
 	ds := dists(words, target)
 
 	for j := range ds {
-		ignored := ignore(words, target)
+		ignored := Filter(words, target)
 		if Solve(ignored, words[j]) {
 			return true
 		}
@@ -41,23 +37,20 @@ func Solve(words []string, target string) bool {
 	return false
 }
 
-func ignore(words []string, first string) []string {
-	sl := make([]string, len(words)-1)
+// Filter removes the word provided
+func Filter(words []string, word string) []string {
+	filtered := make([]string, 0, len(words)-1)
 
-	index := 0
-	for i := 0; i < len(words); i++ {
-		if words[i] == first {
-			continue
+	for _, w := range words {
+		if w != word {
+			filtered = append(filtered, w)
 		}
-
-		sl[index] = words[i]
-		index++
 	}
 
-	return sl
+	return filtered
 }
 
-// compare against every other word for distance
+// dists compares against every other word for distance
 // and find the 1st one that has a distance < 1
 func dists(words []string, target string) []int {
 	ds := []int{}

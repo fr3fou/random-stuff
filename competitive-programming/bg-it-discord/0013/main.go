@@ -14,8 +14,9 @@ func main() {
 	input := scanner.Text()
 	words := strings.Split(input, " ")
 
-	for _, word := range words {
-		if Solve(words, word) {
+	for i := range words {
+		visited := make([]bool, len(words))
+		if Solve(words, i, visited) {
 			fmt.Println(true)
 			return
 		}
@@ -24,51 +25,46 @@ func main() {
 	fmt.Println(false)
 }
 
-func Solve(words []string, target string) bool {
-	ds := dists(words, target)
+func Solve(words []string, index int, visited []bool) bool {
+	ok := true
+	for _, node := range visited {
+		if !node {
+			ok = false
+			break
+		}
+	}
+	if ok {
+		return ok
+	}
 
-	for j := range ds {
-		ignored := Filter(words, target)
-		if Solve(ignored, words[j]) {
+	// Go over the possible candidates
+	for _, i := range Next(words, words[index]) {
+		if visited[i] {
+			continue
+		}
+
+		visited[i] = true
+		if Solve(words, i, visited) {
 			return true
 		}
+		visited[i] = false
 	}
 
 	return false
 }
 
-// Filter removes the word provided
-func Filter(words []string, word string) []string {
-	filtered := make([]string, 0, len(words)-1)
+// Next gives you an array of possible next words.
+// It computes the distances and gives you the words with distance < 2
+func Next(words []string, target string) []int {
+	next := []int{}
 
-	for _, w := range words {
-		if w != word {
-			filtered = append(filtered, w)
+	for i := 0; i < len(words); i++ {
+		if Lev(words[i], target) == 1 {
+			next = append(next, i)
 		}
 	}
 
-	return filtered
-}
-
-// dists compares against every other word for distance
-// and find the 1st one that has a distance < 1
-func dists(words []string, target string) []int {
-	ds := []int{}
-
-	for j := 0; j < len(words); j++ {
-		// prevent comparision against self
-		word := words[j]
-
-		if word == target {
-			continue
-		}
-
-		if Lev(word, target) < 2 {
-			ds = append(ds, j)
-		}
-	}
-
-	return ds
+	return next
 }
 
 func Lev(a, b string) int {

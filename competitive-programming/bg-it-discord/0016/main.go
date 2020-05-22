@@ -5,8 +5,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 func main() {
@@ -18,13 +16,20 @@ func main() {
 		panic(err)
 	}
 	lists := make([][]int, n)
+	length := 0
 
 	for i := 0; i < n; i++ {
 		scanner.Scan()
-		lists[i] = parseList(scanner.Text())
+		list := parseList(scanner.Text())
+		length += list[0]   // first num is length
+		lists[i] = list[1:] // rest is the list
 	}
 
-	spew.Dump(lists)
+	merged := make([]int, length)
+
+	for _, list := range lists {
+
+	}
 }
 
 func parseList(line string) []int {

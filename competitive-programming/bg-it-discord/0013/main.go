@@ -36,6 +36,7 @@ func solve(words []string, index int, visited []bool) bool {
 			break
 		}
 	}
+
 	if ok {
 		return ok
 	}

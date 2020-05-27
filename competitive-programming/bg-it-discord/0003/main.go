@@ -13,22 +13,17 @@ func main() {
 	scanner.Scan()
 
 	input := parseList(scanner.Text())
-	sums := make([]int, len(input))
-	for i, num := range input {
-		sums[i] = sum(input) - num
+	sum := 0
+
+	// O(2n) is still O(n) 😎
+
+	for _, num := range input {
+		sum += num
 	}
 
-	for _, sum := range sums {
-		fmt.Printf("%d ", sum)
+	for _, num := range input {
+		fmt.Printf("%d ", sum-num)
 	}
-}
-
-func sum(nums []int) int {
-	acc := 0
-	for _, num := range nums {
-		acc += num
-	}
-	return acc
 }
 
 func parseList(line string) []int {

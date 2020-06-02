@@ -31,5 +31,4 @@ func partition(arr []int, low int, high int) int {
 	// swap
 	arr[minIndex+1], arr[high] = arr[high], arr[minIndex+1]
 	return minIndex + 1
-
 }

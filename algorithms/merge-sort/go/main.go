@@ -14,9 +14,11 @@ func mergeSort(arr []int) []int {
 	}
 
 	pivot := len(arr) / 2
-	a := mergeSort(arr[:pivot])
-	b := mergeSort(arr[pivot:])
-	return merge(a, b)
+
+	return merge(
+		mergeSort(arr[:pivot]),
+		mergeSort(arr[pivot:]),
+	)
 }
 
 func merge(a []int, b []int) []int {

@@ -27,7 +27,45 @@ func main() {
 
 	merged := make([]int, length)
 
-	for _, list := range lists {
+}
+
+func mergeTwo(a []int, b []int) []int {
+	length := len(a) + len(b)
+	sorted := make([]int, 0, length-2)
+
+	i, j := 0, 0
+	for i < len(a) && j < len(b) {
+		if a[i] < b[j] {
+			sorted = append(sorted, a[i])
+			i++
+		} else {
+			sorted = append(sorted, b[j])
+			j++
+		}
+	}
+
+	// drain the last elements
+	for i < len(a) {
+		sorted = append(sorted, a[i])
+		i++
+	}
+
+	// drain the last elements
+	for j < len(b) {
+		sorted = append(sorted, b[j])
+		j++
+	}
+
+	return sorted
+}
+
+// O(n * log(k))
+func Merge(list [][]int) []int {
+	return merge(list)
+}
+
+func merge(list [][]int) []int {
+	if low < high {
 
 	}
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -25,8 +26,31 @@ func main() {
 		lists[i] = list[1:] // rest is the list
 	}
 
-	merged := make([]int, length)
+	merged := MergeK(lists)
+	for _, val := range merged {
+		fmt.Printf("%d ", val)
+	}
+}
 
+func MergeK(list [][]int) []int {
+	length := len(list)
+
+	switch {
+	case length == 2:
+		return mergeTwo(list[0], list[1])
+	case length == 1:
+		return list[0]
+	case length == 0:
+		return []int{}
+	}
+
+	merged := mergeTwo(list[0], list[1])
+
+	for i := 2; i < length; i++ {
+		merged = mergeTwo(merged, list[i])
+	}
+
+	return merged
 }
 
 func mergeTwo(a []int, b []int) []int {
@@ -57,17 +81,6 @@ func mergeTwo(a []int, b []int) []int {
 	}
 
 	return sorted
-}
-
-// O(n * log(k))
-func Merge(list [][]int) []int {
-	return merge(list)
-}
-
-func merge(list [][]int) []int {
-	if low < high {
-
-	}
 }
 
 func parseList(line string) []int {

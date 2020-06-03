@@ -45,7 +45,7 @@ func MergeK(lists [][]int) []int {
 	)
 }
 
-// O(n * log(k))
+// O(n * k)
 func MergeKBad(list [][]int) []int {
 	length := len(list)
 

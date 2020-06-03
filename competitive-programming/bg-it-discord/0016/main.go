@@ -29,7 +29,6 @@ func main() {
 	printList(MergeK(lists))
 }
 
-// O(n * log(k))
 func MergeK(lists [][]int) []int {
 	length := len(lists)
 
@@ -45,7 +44,6 @@ func MergeK(lists [][]int) []int {
 	)
 }
 
-// O(n * k)
 func MergeKBad(list [][]int) []int {
 	length := len(list)
 

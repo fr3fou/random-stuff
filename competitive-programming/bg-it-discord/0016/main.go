@@ -26,13 +26,31 @@ func main() {
 		lists[i] = list[1:] // rest is the list
 	}
 
-	merged := MergeK(lists)
-	for _, val := range merged {
-		fmt.Printf("%d ", val)
+	if length == 1 {
+		printList(lists[0])
+	} else {
+		printList(MergeK(lists))
 	}
 }
 
-func MergeK(list [][]int) []int {
+// O(n * log(k))
+func MergeK(lists [][]int) []int {
+	length := len(lists)
+
+	if length <= 1 {
+		return lists[0]
+	}
+
+	pivot := length / 2
+
+	return mergeTwo(
+		MergeK(lists[:pivot]),
+		MergeK(lists[pivot:]),
+	)
+}
+
+// O(n * log(k))
+func MergeKBad(list [][]int) []int {
 	length := len(list)
 
 	switch {
@@ -96,4 +114,10 @@ func parseList(line string) []int {
 	}
 
 	return list
+}
+
+func printList(list []int) {
+	for _, val := range list {
+		fmt.Printf("%d ", val)
+	}
 }

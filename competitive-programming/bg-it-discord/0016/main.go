@@ -26,11 +26,7 @@ func main() {
 		lists[i] = list[1:] // rest is the list
 	}
 
-	if length == 1 {
-		printList(lists[0])
-	} else {
-		printList(MergeK(lists))
-	}
+	printList(MergeK(lists))
 }
 
 // O(n * log(k))

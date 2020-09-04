@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 )
 
 func main() {
@@ -11,20 +12,20 @@ func main() {
 
 func split(s string, str string) []string {
 	val := []string{}
-	temp := ""
+	temp := &strings.Builder{}
 
 	for _, elem := range s {
 		if string(elem) == str {
-			val = append(val, temp)
-			temp = ""
+			val = append(val, temp.String())
+			temp.Reset()
 		} else {
-			temp += string(elem)
+			temp.WriteString(string(elem))
 		}
 	}
 
 	// append the last elem
-	if temp != "" {
-		val = append(val, temp)
+	if temp.String() != "" {
+		val = append(val, temp.String())
 	}
 
 	return val

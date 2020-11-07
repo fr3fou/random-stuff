@@ -22,7 +22,7 @@ We can compute the area of our main triangle `△ P_1 P_2 P_3`. This can be achi
 
 ...where `X_1, Y_1` and so on, are the coordinates of each point in the triangle.
 
-We can then apply the same algorithm to each subsequent triangles:
+We can then apply the same algorithm to each subsequent triangle:
 
 ```bash
 # Combinations of triangles, given S

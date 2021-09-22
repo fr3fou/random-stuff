@@ -78,7 +78,7 @@ class LRUCache {
             value
         }
 
-        // Wire up the tail and head to each other (or to itself)
+        // Wire up the tail and head to each other (or to itself if there are no other nodes)
         if (previousHead) {
             let tail = previousHead.prev
             tail.next = this.head
